@@ -14,7 +14,7 @@ public class ProjectileManager : MonoBehaviour
             // do damage
             Debug.Log("Do damage");
         }
-        if (collisionCounter == 2)
+        if (collisionCounter == 2 || collision.gameObject.layer == 4 /* water (used for lava) */)
         {
             Destroy(gameObject);
         }
