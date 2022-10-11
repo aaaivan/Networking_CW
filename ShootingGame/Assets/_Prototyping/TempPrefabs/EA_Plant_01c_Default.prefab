@@ -115,7 +115,7 @@ Transform:
   - {fileID: 5853989330754041722}
   - {fileID: 5853554470695841342}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: -97.955, z: 0}
 --- !u!136 &3571228382611200345
 CapsuleCollider:
@@ -128,7 +128,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.87
-  m_Height: 4.04
+  m_Height: 4.86
   m_Direction: 1
   m_Center: {x: 0.15, y: 1.49, z: -0.22}
 --- !u!1 &5852411560352137184

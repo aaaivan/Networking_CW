@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8095857211759869470}
   - component: {fileID: 8516264094912028695}
+  - component: {fileID: 1206791670024176995}
   m_Layer: 0
   m_Name: EA_Plant_01e_Default
   m_TagString: Untagged
@@ -33,7 +34,7 @@ Transform:
   - {fileID: 8096179571669839284}
   - {fileID: 8095907463893389086}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &8516264094912028695
 CapsuleCollider:
@@ -46,9 +47,25 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 1.17
-  m_Height: 5.59
+  m_Height: 6
   m_Direction: 1
-  m_Center: {x: 0.15, y: 2, z: -0.26}
+  m_Center: {x: 0.15, y: 1.6, z: -0.26}
+--- !u!114 &1206791670024176995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8091225485580056890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &8091245355049680608
 GameObject:
   m_ObjectHideFlags: 0
