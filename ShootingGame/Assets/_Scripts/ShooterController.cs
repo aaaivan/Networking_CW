@@ -17,10 +17,11 @@ public class ShooterController : MonoBehaviour
     [SerializeField] float firePower = 2;
 
     float _lastShotTime;
-
+	Collider[] _colliders;
     private void Awake()
     {
         inputs = GetComponent<StarterAssetsInputs>();
+		_colliders = GetComponents<Collider>();
     }
 
     // Update is called once per frame
@@ -36,9 +37,17 @@ public class ShooterController : MonoBehaviour
     {
         _lastShotTime = Time.time;
         GameObject projectile = Instantiate(projectilePrefab, spawnPosition.position, spawnPosition.rotation);
-        Rigidbody rigidBody = projectile.GetComponent<Rigidbody>();
+		Collider projectileCollider = projectile.GetComponent<Collider>();
+		foreach(var collider in _colliders)
+		{
+			Physics.IgnoreCollision(projectileCollider, collider, true);
+		}
+		Rigidbody rigidBody = projectile.GetComponent<Rigidbody>();
         Vector3 forceDirection = transform.forward * Mathf.Cos(Mathf.Deg2Rad * fireAngle) + transform.up * Mathf.Sin(Mathf.Deg2Rad * fireAngle);
         rigidBody.AddForce(forceDirection * firePower, ForceMode.Impulse);
+
+		// play sound
+		AudioManager.Instance.Play3dSound("Shoot", gameObject.transform.position);
     }
 
 }
