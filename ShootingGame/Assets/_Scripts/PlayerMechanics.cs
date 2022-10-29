@@ -28,6 +28,12 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	bool isHuman = true;
 	public bool IsHuman { get { return isHuman; } }
 
+	public delegate void PlayerKilled(PlayerMechanics p);
+	public static event PlayerKilled OnPlayerKilled;
+
+	public delegate void PlayerDead(PlayerMechanics p);
+	public static event PlayerDead OnPlayerDead;
+
 	private void Awake()
 	{
 		isHuman = GetComponent<NavMeshAgent>() == null;
@@ -38,18 +44,13 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	public void DoDestroy()
 	{
 		deathCount++;
-		if (deathCount < lives)
+		if(deathCount < lives && OnPlayerKilled != null)
 		{
-			RespawnManager.Instance.Respawn(this);
-			ThirdPersonController tpc = GetComponent<ThirdPersonController>();
-			if(tpc != null)
-			{
-				tpc.Reset();
-			}
+			OnPlayerKilled.Invoke(this);
 		}
-		else
+		else if (deathCount >= lives && OnPlayerKilled != null)
 		{
-			Debug.Log("Game Over");
+			OnPlayerDead.Invoke(this);
 		}
 	}
 	public void DoDamage(int damage = 1)

@@ -1,3 +1,4 @@
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine.AI;
 
 public class RespawnManager : MonoBehaviour
 {
+	public Transform respawnPosition;
 	static RespawnManager instance;
 	static public RespawnManager Instance
 	{
@@ -15,6 +17,17 @@ public class RespawnManager : MonoBehaviour
 			return instance;
 		}
 	}
+
+	private void OnEnable()
+	{
+		PlayerMechanics.OnPlayerKilled += ctx => Respawn(ctx);
+	}
+
+	private void OnDisable()
+	{
+		PlayerMechanics.OnPlayerKilled -= ctx => Respawn(ctx);
+	}
+
 	private void Awake()
 	{
 		if (instance == null)
@@ -32,17 +45,21 @@ public class RespawnManager : MonoBehaviour
 	{
 		if(player.IsHuman)
 		{
-			player.transform.position = gameObject.transform.position;
-			player.transform.rotation = gameObject.transform.rotation;
+			player.transform.position = respawnPosition.position;
+			player.transform.rotation = respawnPosition.rotation;
+			ThirdPersonController tpc = player.gameObject.GetComponent<ThirdPersonController>();
+			if (tpc != null)
+			{
+				tpc.Reset();
+			}
 			Physics.SyncTransforms();
 		}
 		else
 		{
 			NavMeshAgent agent = player.gameObject.GetComponent<NavMeshAgent>();
-			player.transform.rotation = gameObject.transform.rotation;
-			agent.Warp(gameObject.transform.position);
+			player.transform.rotation = respawnPosition.rotation;
+			agent.Warp(respawnPosition.position);
 		}
 		player.RestoreHealth();
 	}
-
 }
