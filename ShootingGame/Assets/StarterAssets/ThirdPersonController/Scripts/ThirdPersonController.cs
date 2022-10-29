@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -43,7 +44,12 @@ namespace StarterAssets
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float FallTimeout = 0.15f;
 
-        [Header("Player Grounded")]
+		[Space(10)]
+		[Tooltip("Time required to pass before shooting a new projectile.")]
+		public float ShootingTimeout = 0.5f;
+
+
+		[Header("Player Grounded")]
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         public bool Grounded = true;
 
@@ -85,12 +91,13 @@ namespace StarterAssets
         // timeout deltatime
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
+		private float _lastShotTime;
 
-        // animation IDs
-        private int _animIDSpeed;
-        private int _animIDGrounded;
+
+		// animation IDs
+		private int _animIDSpeed;
+        private int _animIDAttack;
         private int _animIDJump;
-        private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -100,6 +107,7 @@ namespace StarterAssets
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
+		private PlayerMechanics _playerMechanics;
 
         private const float _threshold = 0.01f;
 
@@ -145,6 +153,7 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+			_playerMechanics = GetComponent<PlayerMechanics>();
         }
 
         private void Update()
@@ -154,6 +163,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+			Shoot();
         }
 
         private void LateUpdate()
@@ -164,9 +174,8 @@ namespace StarterAssets
         private void AssignAnimationIDs()
         {
             _animIDSpeed = Animator.StringToHash("Speed");
-            _animIDGrounded = Animator.StringToHash("Grounded");
+            _animIDAttack = Animator.StringToHash("Attack");
             _animIDJump = Animator.StringToHash("Jump");
-            _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         }
 
@@ -177,12 +186,6 @@ namespace StarterAssets
                 transform.position.z);
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
-
-            // update animator if using character
-            if (_hasAnimator)
-            {
-                _animator.SetBool(_animIDGrounded, Grounded);
-            }
         }
 
         private void CameraRotation()
@@ -268,13 +271,6 @@ namespace StarterAssets
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
 
-                // update animator if using character
-                if (_hasAnimator)
-                {
-                    _animator.SetBool(_animIDJump, false);
-                    _animator.SetBool(_animIDFreeFall, false);
-                }
-
                 // stop our velocity dropping infinitely when grounded
                 if (_verticalVelocity < 0.0f)
                 {
@@ -290,9 +286,9 @@ namespace StarterAssets
                     // update animator if using character
                     if (_hasAnimator)
                     {
-                        _animator.SetBool(_animIDJump, true);
-                    }
-                }
+						_animator.SetTrigger(_animIDJump);
+					}
+				}
 
                 // jump timeout
                 if (_jumpTimeoutDelta >= 0.0f)
@@ -309,14 +305,6 @@ namespace StarterAssets
                 if (_fallTimeoutDelta >= 0.0f)
                 {
                     _fallTimeoutDelta -= Time.deltaTime;
-                }
-                else
-                {
-                    // update animator if using character
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDFreeFall, true);
-                    }
                 }
 
                 // if we are not grounded, do not jump
@@ -363,15 +351,30 @@ namespace StarterAssets
             }
         }
 
-        private void OnLand(AnimationEvent animationEvent)
-        {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-            }
-        }
+		private void OnLand(AnimationEvent animationEvent)
+		{
+			if (animationEvent.animatorClipInfo.weight > 0.5f)
+			{
+				AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+			}
+		}
+		
+		private void Shoot()
+		{
+			if (_input.fire && Time.time > ShootingTimeout + _lastShotTime)
+			{
+				_lastShotTime = Time.time;
+				_input.fire = false;
+				_animator.SetTrigger(_animIDAttack);
+			}
+		}
 
-        public void Reset()
+		private void OnShoot()
+		{
+			_playerMechanics.Shoot();
+		}
+
+		public void Reset()
         {
             Grounded = false;
 

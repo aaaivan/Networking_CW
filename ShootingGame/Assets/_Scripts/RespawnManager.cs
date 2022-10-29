@@ -27,10 +27,11 @@ public class RespawnManager : MonoBehaviour
 		}
 	}
 	
-	public void Respawn(GameObject player)
+	public void Respawn(PlayerMechanics player)
 	{
 		player.transform.position = gameObject.transform.position;
 		player.transform.rotation = gameObject.transform.rotation;
+		player.RestoreHealth();
 		Physics.SyncTransforms();
 	}
 
