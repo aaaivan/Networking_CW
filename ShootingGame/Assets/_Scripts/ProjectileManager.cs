@@ -9,13 +9,19 @@ public class ProjectileManager : MonoBehaviour, Destructable
 	[SerializeField]
 	int health = 1;
 	public int Health { get { return health; } }
+
 	public void DoDestroy()
 	{
+		health = 0;
 		Destroy(gameObject);
 		AudioManager.Instance.Play3dSound("ProjectileDestruction", gameObject.transform.position);
 	}
+
 	public void DoDamage(int damage = 1)
 	{
+		if (health <= 0)
+			return;
+
 		health -= damage;
 		if (health <= 0)
 		{
@@ -32,9 +38,9 @@ public class ProjectileManager : MonoBehaviour, Destructable
 		if (gameObj != null)
         {
 			gameObj.DoDamage(damage);
+			DoDamage(health);
         }
-
-		if(health > 0)
+		else if(health > 0)
 		{
 			DoDamage();
 		}

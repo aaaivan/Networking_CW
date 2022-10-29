@@ -13,6 +13,9 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	[SerializeField]
 	int health = 3;
 	int currentHelath = 0;
+	[SerializeField]
+	HealthBar healthBar = null;
+
 	public int Health { get { return health; } }
 
 	[Header("Shooting")]
@@ -23,6 +26,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	[SerializeField] float firePower = 2;
 
 	bool isHuman = true;
+	public bool IsHuman { get { return isHuman; } }
 
 	private void Awake()
 	{
@@ -50,7 +54,9 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	}
 	public void DoDamage(int damage = 1)
 	{
+		Debug.Log("damage");
 		currentHelath -= damage;
+		healthBar.SetFillAmount((float)currentHelath/health);
 		if(currentHelath <= 0)
 		{
 			DoDestroy();
@@ -60,6 +66,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	public void RestoreHealth()
 	{
 		currentHelath = health;
+		healthBar.SetFillAmount(1.0f);
 	}
 
 	public void Shoot()

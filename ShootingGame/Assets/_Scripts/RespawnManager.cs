@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class RespawnManager : MonoBehaviour
 {
@@ -29,10 +30,19 @@ public class RespawnManager : MonoBehaviour
 	
 	public void Respawn(PlayerMechanics player)
 	{
-		player.transform.position = gameObject.transform.position;
-		player.transform.rotation = gameObject.transform.rotation;
+		if(player.IsHuman)
+		{
+			player.transform.position = gameObject.transform.position;
+			player.transform.rotation = gameObject.transform.rotation;
+			Physics.SyncTransforms();
+		}
+		else
+		{
+			NavMeshAgent agent = player.gameObject.GetComponent<NavMeshAgent>();
+			player.transform.rotation = gameObject.transform.rotation;
+			agent.Warp(gameObject.transform.position);
+		}
 		player.RestoreHealth();
-		Physics.SyncTransforms();
 	}
 
 }
