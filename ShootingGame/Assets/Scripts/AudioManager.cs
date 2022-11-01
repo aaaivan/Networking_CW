@@ -6,7 +6,6 @@ public class AudioManager : MonoBehaviour
 {
 	[SerializeField]
 	List<SoundEffect> sounds;
-	GameObject emptyGameObject;
 
 	static AudioManager instance;
 
@@ -25,7 +24,6 @@ public class AudioManager : MonoBehaviour
 		{
 			DontDestroyOnLoad(gameObject);
 			instance = this;
-			emptyGameObject = new GameObject();
 		}
 		else if (instance != null)
 		{
@@ -41,7 +39,7 @@ public class AudioManager : MonoBehaviour
 			return;
 		}
 
-		GameObject go = Instantiate(emptyGameObject, location, Quaternion.identity);
+		GameObject go = Instantiate(new GameObject(), location, Quaternion.identity);
 		go.AddComponent<AudioSource>();
 		AudioSource audioSource = go.AddComponent<AudioSource>();
 		audioSource.loop = false;

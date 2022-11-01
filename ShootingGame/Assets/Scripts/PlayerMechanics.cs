@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Windows;
 
 public class PlayerMechanics : MonoBehaviour, Destructable
 {
@@ -79,6 +80,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 			Physics.IgnoreCollision(projectileCollider, collider, true);
 		}
 		Rigidbody rigidBody = projectile.GetComponent<Rigidbody>();
+
 		Vector3 forceDirection = transform.forward * Mathf.Cos(Mathf.Deg2Rad * fireAngle) + transform.up * Mathf.Sin(Mathf.Deg2Rad * fireAngle);
 		rigidBody.AddForce(forceDirection * firePower, ForceMode.Impulse);
 
