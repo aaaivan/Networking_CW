@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class RoomsInLobbyList : MonoBehaviour
 {
@@ -22,6 +23,23 @@ public class RoomsInLobbyList : MonoBehaviour
 		StopCoroutine(UpdateRoomList());
 		NetworkManager.OnRoomsChanged -= DirtyRoomList;
 		ClearRoomEntries();
+	}
+
+	void Update()
+	{
+		int children = transform.childCount;
+		for (int i = 0; i < children; i++)
+		{
+			Image background = transform.GetChild(i).GetComponent<Image>();
+			if (i % 2 == 0)
+			{
+				background.color = new Color(background.color.r, background.color.g, background.color.b, 0.4f);
+			}
+			else
+			{
+				background.color = new Color(background.color.r, background.color.g, background.color.b, 0.1f);
+			}
+		}
 	}
 
 	IEnumerator UpdateRoomList()

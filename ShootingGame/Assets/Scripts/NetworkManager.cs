@@ -121,7 +121,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnPlayerEnteredRoom(Player newPlayer)
 	{
 		base.OnPlayerEnteredRoom(newPlayer);
-		if (OnRoomsChanged != null)
+		if (OnPlayersChanged != null)
 		{
 			OnPlayersChanged.Invoke();
 		}
@@ -130,7 +130,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnPlayerLeftRoom(Player otherPlayer)
 	{
 		base.OnPlayerLeftRoom(otherPlayer);
-		if (OnRoomsChanged != null)
+		if (OnPlayersChanged != null)
 		{
 			OnPlayersChanged.Invoke();
 		}
@@ -167,8 +167,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)
 	{
 		base.OnRoomListUpdate(roomList);
-		Debug.Log("Room number: " + roomList.Count);
-		currentRooms = roomList;
+		Debug.Log("Number of rooms: " + roomList.Count);
+
+		foreach(RoomInfo room in roomList)
+		{
+			int i = currentRooms.FindIndex(r => r.Name == room.Name);
+			if (i >= 0)
+			{
+				currentRooms[i] = room;
+			}
+			else
+			{
+				currentRooms.Add(room);
+			}
+		}
+
 		if(OnRoomsChanged != null)
 		{
 			OnRoomsChanged.Invoke();
