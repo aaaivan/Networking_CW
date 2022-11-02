@@ -111,6 +111,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		MenuNavigationManager.Instance.ShowMenu(5);
 	}
 
+	public override void OnJoinRoomFailed(short returnCode, string message)
+	{
+		base.OnJoinRoomFailed(returnCode, message);
+		Debug.Log("Failed to join the specified room");
+	}
+
+	public override void OnJoinRandomFailed(short returnCode, string message)
+	{
+		base.OnJoinRandomFailed(returnCode, message);
+		Debug.Log("Failed to join a random room");
+	}
+
 	public void LeaveRoom()
 	{
 		PhotonNetwork.LeaveRoom();
