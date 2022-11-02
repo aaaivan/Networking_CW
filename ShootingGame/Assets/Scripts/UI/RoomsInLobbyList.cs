@@ -52,17 +52,16 @@ public class RoomsInLobbyList : MonoBehaviour
 				roomListDirty = false;
 				ClearRoomEntries();
 
-				List<RoomInfo> rooms;
+				Dictionary<string, RoomInfo> rooms;
 				NetworkManager.Instance.RoomsGet(out rooms);
 
 				foreach (var room in rooms)
 				{
 					GameObject entry = Instantiate(listEntryPrefab, transform);
-					string roomName = room.Name;
-					string occupancy = string.Format("[{0}/{1}]", room.PlayerCount, room.MaxPlayers);
-					entry.transform.GetChild(0).GetComponent<TMP_Text>().text = roomName;
+					string occupancy = string.Format("[{0}/{1}]", room.Value.PlayerCount, room.Value.MaxPlayers);
+					entry.transform.GetChild(0).GetComponent<TMP_Text>().text = room.Key;
 					entry.transform.GetChild(1).GetComponent<TMP_Text>().text = occupancy;
-					entry.GetComponent<RoomListEntry>().RoomName = roomName;
+					entry.GetComponent<RoomListEntry>().RoomName = room.Key;
 				}
 			}
 

@@ -15,7 +15,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public delegate void UpdatePlayersList();
 	public static event UpdatePlayersList OnPlayersChanged;
 
-	List<RoomInfo> currentRooms = new List<RoomInfo>();
+	Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 	public delegate void UpdateRoomsList();
 	public static event UpdateRoomsList OnRoomsChanged;
 
@@ -162,6 +162,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		base.OnLeftLobby();
 		Debug.Log("Lobby left!");
+		cachedRoomList.Clear();
 		MenuNavigationManager.Instance.ShowMenu(2);
 	}
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -171,14 +172,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 		foreach(RoomInfo room in roomList)
 		{
-			int i = currentRooms.FindIndex(r => r.Name == room.Name);
-			if (i >= 0)
+			if (!room.IsOpen || !room.IsVisible || room.RemovedFromList)
 			{
-				currentRooms[i] = room;
+				if (cachedRoomList.ContainsKey(room.Name))
+				{
+					cachedRoomList.Remove(room.Name);
+				}
 			}
 			else
 			{
-				currentRooms.Add(room);
+				cachedRoomList[room.Name] = room;
 			}
 		}
 
@@ -188,8 +191,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		}
 	}
 
-	public void RoomsGet(out List<RoomInfo> rooms)
+	public void RoomsGet(out Dictionary<string, RoomInfo> rooms)
 	{
-		rooms = currentRooms;
+		rooms = cachedRoomList;
 	}
 }
