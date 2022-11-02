@@ -99,6 +99,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		PhotonNetwork.JoinRoom(name);
 	}
 
+	public void JoinRandomRoom()
+	{
+		PhotonNetwork.JoinRandomRoom();
+	}
+
 	public override void OnJoinedRoom()
 	{
 		base.OnJoinedRoom();
