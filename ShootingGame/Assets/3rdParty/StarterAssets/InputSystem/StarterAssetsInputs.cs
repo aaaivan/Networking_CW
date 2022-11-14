@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -20,15 +21,26 @@ namespace StarterAssets
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
+		PhotonView photonView;
+
+		private void Awake()
+		{
+			photonView = GetComponent<PhotonView>();
+		}
+
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 		public void OnMove(InputValue value)
 		{
+			if (photonView != null && !photonView.IsMine)
+				return;
 			MoveInput(value.Get<Vector2>());
 		}
 
 		public void OnLook(InputValue value)
 		{
-			if(cursorInputForLook)
+			if (photonView != null && !photonView.IsMine)
+				return;
+			if (cursorInputForLook)
 			{
 				LookInput(value.Get<Vector2>());
 			}
@@ -36,11 +48,15 @@ namespace StarterAssets
 
 		public void OnJump(InputValue value)
 		{
- 			JumpInput(value.isPressed);
+			if (photonView != null && !photonView.IsMine)
+				return;
+			JumpInput(value.isPressed);
 		}
 
 		public void OnFire(InputValue value)
 		{
+			if (photonView != null && !photonView.IsMine)
+				return;
 			FireInput(value.isPressed);
 		}
 #endif
@@ -68,7 +84,9 @@ namespace StarterAssets
 
 		private void OnApplicationFocus(bool hasFocus)
 		{
-			SetCursorState(cursorLocked);
+			if (photonView != null && !photonView.IsMine)
+				return;
+			//SetCursorState(cursorLocked);
 		}
 
 		private void SetCursorState(bool newState)

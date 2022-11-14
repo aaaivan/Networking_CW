@@ -40,6 +40,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		{
 			Destroy(gameObject);
 		}
+		PhotonNetwork.AutomaticallySyncScene = true;
 	}
 
 	public void ConnectToMaster(string id)
@@ -104,6 +105,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		base.OnJoinedRoom();
 		Debug.Log("Room joined successfully!");
 		MenuNavigationManager.Instance.ShowMenu(5);
+		GameObject startBtn = GameObject.FindGameObjectWithTag("PlayButton");
+		startBtn.SetActive(PhotonNetwork.IsMasterClient);
+	}
+
+	public override void OnMasterClientSwitched(Player newMasterClient)
+	{
+		base.OnMasterClientSwitched(newMasterClient);
+		GameObject startBtn = GameObject.FindGameObjectWithTag("PlayButton");
+		startBtn.SetActive(PhotonNetwork.IsMasterClient);
 	}
 
 	public override void OnJoinRoomFailed(short returnCode, string message)

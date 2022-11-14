@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,5 +28,11 @@ public class MainMenuButtons : MonoBehaviour
 	public void LeaveRoom()
 	{
 		NetworkManager.Instance.LeaveRoom();
+	}
+	public void StartMultiplayerGame()
+	{
+		PhotonNetwork.CurrentRoom.IsOpen = false;
+		PhotonNetwork.CurrentRoom.IsVisible = false;
+		SceneTransitionManager.Instance.LoadScene("MultiPlayer");
 	}
 }
