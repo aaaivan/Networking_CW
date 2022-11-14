@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
@@ -108,8 +109,9 @@ namespace StarterAssets
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 		private PlayerMechanics _playerMechanics;
+		private PhotonView photonView;
 
-        private const float _threshold = 0.01f;
+		private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
 
@@ -134,14 +136,18 @@ namespace StarterAssets
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
 
+			/*
 			if (UnityEngine.Input.mousePresent)
 			{
 				Cursor.lockState = CursorLockMode.Locked;
 				Cursor.visible = false;
 			}
+			*/
+
+			photonView = GetComponent<PhotonView>();
 		}
 
-        private void Start()
+		private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
@@ -164,7 +170,9 @@ namespace StarterAssets
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
+			if (photonView != null && !photonView.IsMine)
+				return;
+			_hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
             GroundedCheck();
@@ -174,7 +182,9 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            CameraRotation();
+			if (photonView != null && !photonView.IsMine)
+				return;
+			CameraRotation();
         }
 
         private void AssignAnimationIDs()
