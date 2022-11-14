@@ -9,6 +9,8 @@ public class ProjectileManager : MonoBehaviour, Destructable
 	[SerializeField]
 	int health = 1;
 	public int Health { get { return health; } }
+	public Vector3 RespownPosition { get { return Vector3.zero; } set { ; } }
+
 
 	public void DoDestroy()
 	{

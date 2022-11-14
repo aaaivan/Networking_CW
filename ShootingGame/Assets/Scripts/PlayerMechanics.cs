@@ -19,6 +19,9 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	HealthBar healthBar = null;
 
 	public int Health { get { return health; } }
+	Vector3 respownTransform = Vector3.zero;
+	Quaternion respownRotation = Quaternion.identity;
+	public Vector3 RespownPosition { get { return respownTransform; } set { respownTransform = value; } }
 
 	[Header("Shooting")]
 	[SerializeField] GameObject projectilePrefab = null;
@@ -40,6 +43,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	{
 		isHuman = GetComponent<NavMeshAgent>() == null;
 		playerColliders = GetComponents<Collider>();
+		RespownPosition = transform.position;
 		RestoreHealth();
 	}
 

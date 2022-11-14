@@ -6,8 +6,6 @@ using UnityEngine.AI;
 
 public class RespawnManager : MonoBehaviour
 {
-	public Transform respawnPosition;
-
 	private void OnEnable()
 	{
 		PlayerMechanics.OnPlayerKilled += Respawn;
@@ -20,23 +18,26 @@ public class RespawnManager : MonoBehaviour
 
 	public void Respawn(PlayerMechanics player)
 	{
-		if(player.IsHuman)
+		Vector3 respawnPosition = player.RespownPosition;
+		if(respawnPosition != null)
 		{
-			player.transform.position = respawnPosition.position;
-			player.transform.rotation = respawnPosition.rotation;
-			ThirdPersonController tpc = player.gameObject.GetComponent<ThirdPersonController>();
-			if (tpc != null)
+			if (player.IsHuman)
 			{
-				tpc.Reset();
+				player.transform.position = respawnPosition;
+				ThirdPersonController tpc = player.gameObject.GetComponent<ThirdPersonController>();
+				if (tpc != null)
+				{
+					tpc.Reset();
+				}
+				Physics.SyncTransforms();
 			}
-			Physics.SyncTransforms();
+			else
+			{
+				NavMeshAgent agent = player.gameObject.GetComponent<NavMeshAgent>();
+				agent.Warp(respawnPosition);
+			}
 		}
-		else
-		{
-			NavMeshAgent agent = player.gameObject.GetComponent<NavMeshAgent>();
-			player.transform.rotation = respawnPosition.rotation;
-			agent.Warp(respawnPosition.position);
-		}
+
 		player.RestoreHealth();
 	}
 }
