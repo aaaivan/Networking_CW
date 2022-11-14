@@ -1415,7 +1415,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillRect: {fileID: 3448566043175720581}
-  cam: {fileID: 0}
 --- !u!1 &3448566044436027926
 GameObject:
   m_ObjectHideFlags: 0

@@ -192,7 +192,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillRect: {fileID: 3448566043175720581}
-  cam: {fileID: 0}
 --- !u!1 &3448566044436027926
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,6 +1332,7 @@ GameObject:
   - component: {fileID: 7254636295333897030}
   - component: {fileID: 7254636295333897025}
   - component: {fileID: 7254636295333897024}
+  - component: {fileID: 53602240166941077}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -1426,12 +1426,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lives: 1
-  health: 5
+  health: 3
   healthBar: {fileID: 3448566043670110669}
   projectilePrefab: {fileID: 2557817864867074807, guid: 1abf5530c7f9cfa4d9c0b02d4f163f42, type: 3}
   spawnPosition: {fileID: 7254636295500782750}
   fireAngle: 5
-  firePower: 20
+  firePower: 30
 --- !u!114 &7254636295333897024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1444,8 +1444,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09c0b982328477041802855c9e359eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerDetectionDistance: 20
+  playerDetectionDistance: 30
   ShootingTimeout: 1
+--- !u!54 &53602240166941077
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254636295333897019}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &7254636295500782745
 GameObject:
   m_ObjectHideFlags: 0

@@ -393,5 +393,16 @@ namespace StarterAssets
             _jumpTimeoutDelta = 0;
             _fallTimeoutDelta = 0;
         }
-    }
+
+		public void DisableGameInputs()
+		{
+			PlayerInput input = GetComponent<PlayerInput>();
+			input.actions.Disable();
+		}
+		public void EnableGameInputs()
+		{
+			PlayerInput input = GetComponent<PlayerInput>();
+			input.actions.Enable();
+		}
+	}
 }

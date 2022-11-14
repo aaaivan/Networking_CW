@@ -18,16 +18,15 @@ public class MenuNavigationManager : MonoBehaviour
 			return instance;
 		}
 	}
+
+	public void OnDestroy()
+	{
+		instance = null;
+	}
+
 	private void Awake()
 	{
-		if (instance == null)
-		{
-			instance = this;
-		}
-		else if (instance != null)
-		{
-			Destroy(gameObject);
-		}
+		instance = this;
 	}
 	public void ShowMenu(int id)
 	{

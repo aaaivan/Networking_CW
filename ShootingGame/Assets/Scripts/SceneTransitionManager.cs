@@ -17,17 +17,15 @@ public class SceneTransitionManager : MonoBehaviour
 			return instance;
 		}
 	}
+
+	private void OnDestroy()
+	{
+		instance = null; 
+	}
+
 	private void Awake()
 	{
-		if (instance == null)
-		{
-			DontDestroyOnLoad(gameObject);
-			instance = this;
-		}
-		else if (instance != null)
-		{
-			Destroy(gameObject);
-		}
+		instance = this;
 	}
 
 	public void LoadScene(string sceneName)

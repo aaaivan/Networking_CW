@@ -78,11 +78,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		PhotonNetwork.CreateRoom(name, roomOptions);
 	}
 
-	public void CreateRandomRoom()
-	{
-		// TODO: implement
-	}
-
 	public override void OnCreatedRoom()
 	{
 		base.OnCreatedRoom();

@@ -1,3 +1,4 @@
+using Photon.Realtime;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,6 +53,14 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 		else if (deathCount >= lives && OnPlayerKilled != null)
 		{
 			OnPlayerDead.Invoke(this);
+			if(isHuman)
+			{
+				gameObject.SetActive(false);
+			}
+			else
+			{
+				Destroy(gameObject);
+			}
 		}
 	}
 	public void DoDamage(int damage = 1)

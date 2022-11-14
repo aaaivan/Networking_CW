@@ -6,8 +6,11 @@ public class HealthBar : MonoBehaviour
 {
 	[SerializeField]
 	GameObject fillRect;
-	[SerializeField]
 	Camera cam;
+	private void Awake()
+	{
+		cam = GameObject.FindGameObjectsWithTag("MainCamera")[0].GetComponent<Camera>();
+	}
 
 	private void LateUpdate()
 	{

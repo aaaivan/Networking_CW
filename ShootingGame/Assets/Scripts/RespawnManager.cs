@@ -7,39 +7,17 @@ using UnityEngine.AI;
 public class RespawnManager : MonoBehaviour
 {
 	public Transform respawnPosition;
-	static RespawnManager instance;
-	static public RespawnManager Instance
-	{
-		get
-		{
-			if (instance == null)
-				throw new UnityException("You need to add a RespawnManager to your scene");
-			return instance;
-		}
-	}
 
 	private void OnEnable()
 	{
-		PlayerMechanics.OnPlayerKilled += ctx => Respawn(ctx);
+		PlayerMechanics.OnPlayerKilled += Respawn;
 	}
 
 	private void OnDisable()
 	{
-		PlayerMechanics.OnPlayerKilled -= ctx => Respawn(ctx);
+		PlayerMechanics.OnPlayerKilled -= Respawn;
 	}
 
-	private void Awake()
-	{
-		if (instance == null)
-		{
-			instance = this;
-		}
-		else if (instance != null)
-		{
-			Destroy(gameObject);
-		}
-	}
-	
 	public void Respawn(PlayerMechanics player)
 	{
 		if(player.IsHuman)

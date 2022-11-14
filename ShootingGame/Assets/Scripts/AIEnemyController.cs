@@ -92,7 +92,9 @@ public class AIEnemyController : MonoBehaviour
 
 	private void Chase()
 	{
-		agent.SetDestination(chasedPlayer.transform.position);
+		Vector3 chaseDir = chasedPlayer.transform.position - transform.position;
+		chaseDir.Normalize();
+		agent.SetDestination(chasedPlayer.transform.position - 5 * chaseDir);
 	}
 
 	private void Shoot()
