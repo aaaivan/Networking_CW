@@ -172,6 +172,7 @@ namespace StarterAssets
         {
 			if (photonView != null && !photonView.IsMine)
 				return;
+
 			_hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
@@ -184,6 +185,7 @@ namespace StarterAssets
         {
 			if (photonView != null && !photonView.IsMine)
 				return;
+
 			CameraRotation();
         }
 
@@ -197,8 +199,11 @@ namespace StarterAssets
 
         private void GroundedCheck()
         {
-            // set sphere position, with offset
-            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
+			if (photonView != null && !photonView.IsMine)
+				return;
+
+			// set sphere position, with offset
+			Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
                 transform.position.z);
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
@@ -206,8 +211,11 @@ namespace StarterAssets
 
         private void CameraRotation()
         {
-            // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+			if (photonView != null && !photonView.IsMine)
+				return;
+
+			// if there is an input and camera position is not fixed
+			if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
@@ -229,8 +237,11 @@ namespace StarterAssets
 
         private void Move()
         {
-            // set target speed based on move speed
-            float targetSpeed = MoveSpeed;
+			if (photonView != null && !photonView.IsMine)
+				return;
+
+			// set target speed based on move speed
+			float targetSpeed = MoveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -282,7 +293,10 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-            if (Grounded)
+			if (photonView != null && !photonView.IsMine)
+				return;
+
+			if (Grounded)
             {
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
@@ -357,7 +371,10 @@ namespace StarterAssets
 
         private void OnFootstep(AnimationEvent animationEvent)
         {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
+			if (photonView != null && !photonView.IsMine)
+				return;
+
+			if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
                 if (FootstepAudioClips.Length > 0)
                 {
@@ -369,6 +386,9 @@ namespace StarterAssets
 
 		private void OnLand(AnimationEvent animationEvent)
 		{
+			if (photonView != null && !photonView.IsMine)
+				return;
+
 			if (animationEvent.animatorClipInfo.weight > 0.5f)
 			{
 				AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
@@ -377,6 +397,9 @@ namespace StarterAssets
 		
 		private void Shoot()
 		{
+			if (photonView != null && !photonView.IsMine)
+				return;
+
 			if (_input.fire && Time.time > ShootingTimeout + _lastShotTime)
 			{
 				_lastShotTime = Time.time;
@@ -387,12 +410,31 @@ namespace StarterAssets
 
 		private void OnShoot()
 		{
+			if (photonView != null && !photonView.IsMine)
+				return;
+
+			if(photonView == null)
+			{
+				DoShot();
+			}
+			else
+			{
+				photonView.RPC("DoShot", RpcTarget.AllViaServer);
+			}
+		}
+
+		[PunRPC]
+		private void DoShot()
+		{
 			_playerMechanics.Shoot();
 		}
 
 		public void Reset()
         {
-            Grounded = false;
+			if (photonView != null && !photonView.IsMine)
+				return;
+
+			Grounded = false;
 
             // player
             _speed = 0;
@@ -406,11 +448,17 @@ namespace StarterAssets
 
 		public void DisableGameInputs()
 		{
+			if (photonView != null && !photonView.IsMine)
+				return;
+
 			PlayerInput input = GetComponent<PlayerInput>();
 			input.actions.Disable();
 		}
 		public void EnableGameInputs()
 		{
+			if (photonView != null && !photonView.IsMine)
+				return;
+
 			PlayerInput input = GetComponent<PlayerInput>();
 			input.actions.Enable();
 		}
