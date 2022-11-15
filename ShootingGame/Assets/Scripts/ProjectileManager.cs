@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class ProjectileManager : MonoBehaviour, Destructable
@@ -10,6 +12,7 @@ public class ProjectileManager : MonoBehaviour, Destructable
 	int health = 1;
 	public int Health { get { return health; } }
 	public Vector3 RespownPosition { get { return Vector3.zero; } set { ; } }
+	bool isBeingDestroyed = false;
 
 
 	public void DoDestroy()
@@ -36,11 +39,15 @@ public class ProjectileManager : MonoBehaviour, Destructable
 	}
 	private void OnCollisionExit(Collision collision)
     {
+		if (isBeingDestroyed)
+			return;
+
 		Destructable gameObj = collision.gameObject.GetComponent<Destructable>();
 		if (gameObj != null)
         {
 			gameObj.DoDamage(damage);
 			DoDamage(health);
+			isBeingDestroyed = true;
         }
 		else if(health > 0)
 		{

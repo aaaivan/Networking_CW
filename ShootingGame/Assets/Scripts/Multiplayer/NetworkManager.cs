@@ -113,7 +113,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		base.OnMasterClientSwitched(newMasterClient);
 		GameObject startBtn = GameObject.FindGameObjectWithTag("PlayButton");
-		startBtn.SetActive(PhotonNetwork.IsMasterClient);
+		if(startBtn != null)
+			startBtn.SetActive(PhotonNetwork.IsMasterClient);
 	}
 
 	public override void OnJoinRoomFailed(short returnCode, string message)

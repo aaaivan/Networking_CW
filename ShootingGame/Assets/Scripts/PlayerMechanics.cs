@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Windows;
 
-public class PlayerMechanics : MonoBehaviour, Destructable
+public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 {
 	[Header("Health and Lives")]
 	[SerializeField]
@@ -108,9 +108,6 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 
 	public void Shoot()
 	{
-		if (isHuman && !isLocalPlayer)
-			return;
-
 		GameObject projectile = Instantiate(projectilePrefab, spawnPosition.position, spawnPosition.rotation);
 		Collider projectileCollider = projectile.GetComponent<Collider>();
 		foreach (var collider in playerColliders)
@@ -124,5 +121,18 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 
 		// play sound
 		AudioManager.Instance.Play3dSound("Shoot", gameObject.transform.position);
+	}
+
+	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	{
+		if (stream.IsWriting)
+		{
+			stream.SendNext(currentHelath);
+		}
+		else
+		{
+			currentHelath = (int)stream.ReceiveNext();
+			healthBar.SetFillAmount((float)currentHelath / health);
+		}
 	}
 }
