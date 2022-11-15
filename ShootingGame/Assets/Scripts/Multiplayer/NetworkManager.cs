@@ -8,7 +8,9 @@ using UnityEngine.UI;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
 	[SerializeField]
-	GameObject startGameBtn;
+	Button startGameBtn;
+	[SerializeField]
+	Button joinRandomRoomBtn;
 
 	string playerId;
 	public string PlayerId
@@ -57,6 +59,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		base.OnConnectedToMaster();
 		Debug.Log(playerId + " has connected to the master sever!");
 		MenuNavigationManager.Instance.ShowMenu(2);
+		JoinLobby();
 	}
 
 	public void DisconnectFromMaster()
@@ -108,23 +111,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		Debug.Log("Room joined successfully!");
 		MenuNavigationManager.Instance.ShowMenu(5);
 		if (startGameBtn != null)
-			startGameBtn.SetActive(PhotonNetwork.IsMasterClient);
+			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 
 		if (PhotonNetwork.PlayerList.Length > 1)
-			startGameBtn.GetComponent<Button>().interactable = true;
+			startGameBtn.interactable = true;
 		else
-			startGameBtn.GetComponent<Button>().interactable = false;
+			startGameBtn.interactable = false;
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
 		if (startGameBtn != null)
-			startGameBtn.SetActive(PhotonNetwork.IsMasterClient);
+			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 
 		if (PhotonNetwork.PlayerList.Length > 1)
-			startGameBtn.GetComponent<Button>().interactable = true;
+			startGameBtn.interactable = true;
 		else
-			startGameBtn.GetComponent<Button>().interactable = false;
+			startGameBtn.interactable = false;
 	}
 
 	public override void OnJoinRoomFailed(short returnCode, string message)
@@ -149,6 +152,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		base.OnLeftRoom();
 		Debug.Log("Room has been left.");
 		MenuNavigationManager.Instance.ShowMenu(2);
+		JoinLobby();
 	}
 
 	public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -160,9 +164,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		}
 
 		if (PhotonNetwork.PlayerList.Length > 1)
-			startGameBtn.GetComponent<Button>().interactable = true;
+			startGameBtn.interactable = true;
 		else
-			startGameBtn.GetComponent<Button>().interactable = false;
+			startGameBtn.interactable = false;
 	}
 
 	public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -174,9 +178,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		}
 
 		if (PhotonNetwork.PlayerList.Length > 1)
-			startGameBtn.GetComponent<Button>().interactable = true;
+			startGameBtn.interactable = true;
 		else
-			startGameBtn.GetComponent<Button>().interactable = false;
+			startGameBtn.interactable = false;
 	}
 
 	public void PlayersGet(out Player[] players)
@@ -193,7 +197,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		base.OnJoinedLobby();
 		Debug.Log("Lobby joined"!);
-		MenuNavigationManager.Instance.ShowMenu(4);
+		joinRandomRoomBtn.interactable = cachedRoomList.Count > 0;
 	}
 
 	public void LeaveLobby()
@@ -206,14 +210,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		base.OnLeftLobby();
 		Debug.Log("Lobby left!");
 		cachedRoomList.Clear();
-		MenuNavigationManager.Instance.ShowMenu(2);
+		DisconnectFromMaster();
 	}
+
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)
 	{
 		base.OnRoomListUpdate(roomList);
 		Debug.Log("Number of rooms: " + roomList.Count);
 
-		foreach(RoomInfo room in roomList)
+		foreach (RoomInfo room in roomList)
 		{
 			if (!room.IsOpen || !room.IsVisible || room.RemovedFromList)
 			{
@@ -228,7 +233,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 			}
 		}
 
-		if(OnRoomsChanged != null)
+		joinRandomRoomBtn.interactable = cachedRoomList.Count > 0;
+		if (OnRoomsChanged != null)
 		{
 			OnRoomsChanged.Invoke();
 		}

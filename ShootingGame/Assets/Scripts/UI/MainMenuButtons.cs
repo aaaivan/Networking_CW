@@ -12,7 +12,7 @@ public class MainMenuButtons : MonoBehaviour
 
 	public void ShowRooms()
 	{
-		NetworkManager.Instance.JoinLobby();
+		MenuNavigationManager.Instance.ShowMenu(4);
 	}
 
 	public void Disconnect()
@@ -23,6 +23,11 @@ public class MainMenuButtons : MonoBehaviour
 	public void LeaveLobby()
 	{
 		NetworkManager.Instance.LeaveLobby();
+	}
+
+	public void ShowRoomOptions()
+	{
+		MenuNavigationManager.Instance.ShowMenu(2);
 	}
 
 	public void LeaveRoom()
