@@ -170,7 +170,7 @@ namespace StarterAssets
 
         private void Update()
         {
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			_hasAnimator = TryGetComponent(out _animator);
@@ -183,7 +183,7 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			CameraRotation();
@@ -199,7 +199,7 @@ namespace StarterAssets
 
         private void GroundedCheck()
         {
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			// set sphere position, with offset
@@ -211,7 +211,7 @@ namespace StarterAssets
 
         private void CameraRotation()
         {
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			// if there is an input and camera position is not fixed
@@ -237,7 +237,7 @@ namespace StarterAssets
 
         private void Move()
         {
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			// set target speed based on move speed
@@ -293,7 +293,7 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			if (Grounded)
@@ -371,7 +371,7 @@ namespace StarterAssets
 
         private void OnFootstep(AnimationEvent animationEvent)
         {
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			if (animationEvent.animatorClipInfo.weight > 0.5f)
@@ -386,7 +386,7 @@ namespace StarterAssets
 
 		private void OnLand(AnimationEvent animationEvent)
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			if (animationEvent.animatorClipInfo.weight > 0.5f)
@@ -397,7 +397,7 @@ namespace StarterAssets
 		
 		private void Shoot()
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			if (_input.fire && Time.time > ShootingTimeout + _lastShotTime)
@@ -410,12 +410,12 @@ namespace StarterAssets
 
 		private void OnShoot()
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
-			if(photonView == null)
+			if (photonView == null)
 			{
-				DoShot();
+				_playerMechanics.Shoot();
 			}
 			else
 			{
@@ -431,7 +431,7 @@ namespace StarterAssets
 
 		public void Reset()
         {
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			Grounded = false;
@@ -448,7 +448,7 @@ namespace StarterAssets
 
 		public void DisableGameInputs()
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			PlayerInput input = GetComponent<PlayerInput>();
@@ -456,7 +456,7 @@ namespace StarterAssets
 		}
 		public void EnableGameInputs()
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!_playerMechanics.IsLocalPlayer)
 				return;
 
 			PlayerInput input = GetComponent<PlayerInput>();

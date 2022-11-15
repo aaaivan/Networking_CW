@@ -23,21 +23,24 @@ public class RespawnManager : MonoBehaviour
 		{
 			if (player.IsHuman)
 			{
-				player.transform.position = respawnPosition;
-				ThirdPersonController tpc = player.gameObject.GetComponent<ThirdPersonController>();
-				if (tpc != null)
+				if (player.IsLocalPlayer)
 				{
-					tpc.Reset();
+					player.transform.position = respawnPosition;
+					ThirdPersonController tpc = player.gameObject.GetComponent<ThirdPersonController>();
+					if (tpc != null)
+					{
+						tpc.Reset();
+					}
+					Physics.SyncTransforms();
+					player.RestoreHealth();
 				}
-				Physics.SyncTransforms();
 			}
 			else
 			{
 				NavMeshAgent agent = player.gameObject.GetComponent<NavMeshAgent>();
 				agent.Warp(respawnPosition);
+				player.RestoreHealth();
 			}
 		}
-
-		player.RestoreHealth();
 	}
 }

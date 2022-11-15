@@ -1829,7 +1829,7 @@ MonoBehaviour:
   lives: 3
   health: 5
   healthBar: {fileID: 3448566043670110669}
-  projectilePrefab: {fileID: 2557817864867074807, guid: 92773376c694f64489ce480686634724, type: 3}
+  projectilePrefab: {fileID: 2557817864867074807, guid: 1abf5530c7f9cfa4d9c0b02d4f163f42, type: 3}
   spawnPosition: {fileID: 2444884960815117041}
   fireAngle: 5
   firePower: 30

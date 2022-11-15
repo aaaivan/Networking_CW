@@ -1,3 +1,4 @@
+using Photon.Pun;
 using Photon.Realtime;
 using StarterAssets;
 using System.Collections;
@@ -20,7 +21,6 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 
 	public int Health { get { return health; } }
 	Vector3 respownTransform = Vector3.zero;
-	Quaternion respownRotation = Quaternion.identity;
 	public Vector3 RespownPosition { get { return respownTransform; } set { respownTransform = value; } }
 
 	[Header("Shooting")]
@@ -33,6 +33,9 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	bool isHuman = true;
 	public bool IsHuman { get { return isHuman; } }
 
+	bool isLocalPlayer = false;
+	public bool IsLocalPlayer { get { return isLocalPlayer; } }
+
 	public delegate void PlayerKilled(PlayerMechanics p);
 	public static event PlayerKilled OnPlayerKilled;
 
@@ -41,7 +44,10 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 
 	private void Awake()
 	{
-		isHuman = GetComponent<NavMeshAgent>() == null;
+		isHuman = (GetComponent<NavMeshAgent>() == null);
+		PhotonView photonView = GetComponent<PhotonView>();
+		isLocalPlayer = isHuman && (photonView == null || photonView.IsMine);
+
 		playerColliders = GetComponents<Collider>();
 		RespownPosition = transform.position;
 		RestoreHealth();
@@ -49,15 +55,25 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 
 	public void DoDestroy()
 	{
+		if (isHuman && !isLocalPlayer)
+			return;
+
 		deathCount++;
 		if(deathCount < lives && OnPlayerKilled != null)
 		{
-			OnPlayerKilled.Invoke(this);
+			if (OnPlayerKilled != null)
+			{
+				OnPlayerKilled.Invoke(this);
+			}
 		}
 		else if (deathCount >= lives && OnPlayerKilled != null)
 		{
-			OnPlayerDead.Invoke(this);
-			if(isHuman)
+			if (OnPlayerDead != null)
+			{
+				OnPlayerDead.Invoke(this);
+			}
+
+			if (isHuman)
 			{
 				gameObject.SetActive(false);
 			}
@@ -69,6 +85,9 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 	}
 	public void DoDamage(int damage = 1)
 	{
+		if (isHuman && !isLocalPlayer)
+			return;
+
 		Debug.Log("damage");
 		currentHelath -= damage;
 		healthBar.SetFillAmount((float)currentHelath/health);
@@ -80,12 +99,18 @@ public class PlayerMechanics : MonoBehaviour, Destructable
 
 	public void RestoreHealth()
 	{
+		if (isHuman && !isLocalPlayer)
+			return;
+
 		currentHelath = health;
 		healthBar.SetFillAmount(1.0f);
 	}
 
 	public void Shoot()
 	{
+		if (isHuman && !isLocalPlayer)
+			return;
+
 		GameObject projectile = Instantiate(projectilePrefab, spawnPosition.position, spawnPosition.rotation);
 		Collider projectileCollider = projectile.GetComponent<Collider>();
 		foreach (var collider in playerColliders)
