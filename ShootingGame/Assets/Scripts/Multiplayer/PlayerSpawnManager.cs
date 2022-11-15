@@ -25,6 +25,7 @@ public class PlayerSpawnManager : MonoBehaviour
 		if ( playerMechanics.IsLocalPlayer )
 		{
 			followPlayerCam.Follow = player.transform.Find("PlayerCameraRoot");
+			InputsManager.Instance.thirdPersonController = player.GetComponent<ThirdPersonController>();
 		}
 	}
 }

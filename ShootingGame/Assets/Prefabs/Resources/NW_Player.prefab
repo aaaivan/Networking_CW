@@ -1826,7 +1826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e53304b533f5fbc4888401a509111713, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lives: 3
+  lives: 1000
   health: 5
   healthBar: {fileID: 3448566043670110669}
   projectilePrefab: {fileID: 2557817864867074807, guid: 1abf5530c7f9cfa4d9c0b02d4f163f42, type: 3}

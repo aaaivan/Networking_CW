@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class SceneTransitionManager : MonoBehaviour
 {
-
 	static SceneTransitionManager instance;
 
 	static public SceneTransitionManager Instance
