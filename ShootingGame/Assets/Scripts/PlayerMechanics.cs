@@ -1,10 +1,12 @@
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
 public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
@@ -32,9 +34,10 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 
 	bool isHuman = true;
 	public bool IsHuman { get { return isHuman; } }
-
 	bool isLocalPlayer = false;
 	public bool IsLocalPlayer { get { return isLocalPlayer; } }
+
+	Photon.Realtime.Player owner = null;
 
 	public delegate void PlayerKilled(PlayerMechanics p);
 	public static event PlayerKilled OnPlayerKilled;
@@ -44,19 +47,28 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 
 	private void Awake()
 	{
-		isHuman = (GetComponent<NavMeshAgent>() == null);
+		isHuman = GetComponent<PlayerInput>() != null;
 		PhotonView photonView = GetComponent<PhotonView>();
 		isLocalPlayer = isHuman && (photonView == null || photonView.IsMine);
+		if(photonView != null)
+			owner = photonView.Owner;
 
 		playerColliders = GetComponents<Collider>();
 		RespownPosition = transform.position;
 		RestoreHealth();
 	}
 
-	public void DoDestroy()
+	public void DoDestroy(PlayerMechanics causedBy = null)
 	{
 		if (isHuman && !isLocalPlayer)
 			return;
+
+		// Update score of the player who caused the damage
+		if(causedBy != null && causedBy.owner != null)
+		{
+			causedBy.owner.AddScore(1);
+		}
+
 
 		deathCount++;
 		if(deathCount < lives && OnPlayerKilled != null)
@@ -83,7 +95,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 			}
 		}
 	}
-	public void DoDamage(int damage = 1)
+	public void DoDamage(int damage, PlayerMechanics causedBy = null)
 	{
 		if (isHuman && !isLocalPlayer)
 			return;
@@ -93,7 +105,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 		healthBar.SetFillAmount((float)currentHelath/health);
 		if(currentHelath <= 0)
 		{
-			DoDestroy();
+			DoDestroy(causedBy);
 		}
 	}
 
@@ -109,6 +121,8 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 	public void Shoot()
 	{
 		GameObject projectile = Instantiate(projectilePrefab, spawnPosition.position, spawnPosition.rotation);
+
+		// Prevent the projectile to collide with th eplayer who shot it
 		Collider projectileCollider = projectile.GetComponent<Collider>();
 		foreach (var collider in playerColliders)
 		{
@@ -116,10 +130,15 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 		}
 		Rigidbody rigidBody = projectile.GetComponent<Rigidbody>();
 
+		// Set owner of the projectile
+		ProjectileManager projecitleManager = projectile.GetComponent<ProjectileManager>();
+		projecitleManager.shotBy = this;
+
+		// Apply impulse to the projectile
 		Vector3 forceDirection = transform.forward * Mathf.Cos(Mathf.Deg2Rad * fireAngle) + transform.up * Mathf.Sin(Mathf.Deg2Rad * fireAngle);
 		rigidBody.AddForce(forceDirection * firePower, ForceMode.Impulse);
 
-		// play sound
+		// Play sound
 		AudioManager.Instance.Play3dSound("Shoot", gameObject.transform.position);
 	}
 

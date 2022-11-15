@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Photon.Realtime;
+using Photon.Pun;
 
 public class PlayersInRoomList : MonoBehaviour
 {
@@ -43,7 +44,6 @@ public class PlayersInRoomList : MonoBehaviour
 					entry.GetComponent<TMP_Text>().text = player.NickName;
 				}
 			}
-
 			yield return new WaitForSeconds(1);
 		}
 	}

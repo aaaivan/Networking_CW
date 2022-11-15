@@ -5,7 +5,7 @@ using UnityEngine;
 public interface Destructable
 {
 	public int Health { get; }
-	public void DoDestroy();
-	public void DoDamage(int damage = 1);
+	public void DoDestroy(PlayerMechanics causedBy = null);
+	public void DoDamage(int damage, PlayerMechanics causedBy = null);
 	public Vector3 RespownPosition { get; set; }
 }

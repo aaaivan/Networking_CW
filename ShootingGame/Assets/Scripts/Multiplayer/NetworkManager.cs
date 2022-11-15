@@ -3,9 +3,13 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+	[SerializeField]
+	GameObject startGameBtn;
+
 	string playerId;
 	public string PlayerId
 	{
@@ -29,17 +33,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 			return instance;
 		}
 	}
+
+	private void OnDestroy()
+	{
+		instance = null;
+	}
+
 	private void Awake()
 	{
-		if (instance == null)
-		{
-			DontDestroyOnLoad(gameObject);
-			instance = this;
-		}
-		else if (instance != null)
-		{
-			Destroy(gameObject);
-		}
+		instance = this;
 		PhotonNetwork.AutomaticallySyncScene = true;
 	}
 
@@ -105,16 +107,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		base.OnJoinedRoom();
 		Debug.Log("Room joined successfully!");
 		MenuNavigationManager.Instance.ShowMenu(5);
-		GameObject startBtn = GameObject.FindGameObjectWithTag("PlayButton");
-		startBtn.SetActive(PhotonNetwork.IsMasterClient);
+		if (startGameBtn != null)
+			startGameBtn.SetActive(PhotonNetwork.IsMasterClient);
+
+		if (PhotonNetwork.PlayerList.Length > 1)
+			startGameBtn.GetComponent<Button>().interactable = true;
+		else
+			startGameBtn.GetComponent<Button>().interactable = false;
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
-		base.OnMasterClientSwitched(newMasterClient);
-		GameObject startBtn = GameObject.FindGameObjectWithTag("PlayButton");
-		if(startBtn != null)
-			startBtn.SetActive(PhotonNetwork.IsMasterClient);
+		if (startGameBtn != null)
+			startGameBtn.SetActive(PhotonNetwork.IsMasterClient);
+
+		if (PhotonNetwork.PlayerList.Length > 1)
+			startGameBtn.GetComponent<Button>().interactable = true;
+		else
+			startGameBtn.GetComponent<Button>().interactable = false;
 	}
 
 	public override void OnJoinRoomFailed(short returnCode, string message)
@@ -148,6 +158,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		{
 			OnPlayersChanged.Invoke();
 		}
+
+		if (PhotonNetwork.PlayerList.Length > 1)
+			startGameBtn.GetComponent<Button>().interactable = true;
+		else
+			startGameBtn.GetComponent<Button>().interactable = false;
 	}
 
 	public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -157,6 +172,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		{
 			OnPlayersChanged.Invoke();
 		}
+
+		if (PhotonNetwork.PlayerList.Length > 1)
+			startGameBtn.GetComponent<Button>().interactable = true;
+		else
+			startGameBtn.GetComponent<Button>().interactable = false;
 	}
 
 	public void PlayersGet(out Player[] players)

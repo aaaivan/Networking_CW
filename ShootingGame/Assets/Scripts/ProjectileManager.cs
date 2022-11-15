@@ -14,15 +14,17 @@ public class ProjectileManager : MonoBehaviour, Destructable
 	public Vector3 RespownPosition { get { return Vector3.zero; } set { ; } }
 	bool isBeingDestroyed = false;
 
+	public PlayerMechanics shotBy { get; set; }
 
-	public void DoDestroy()
+
+	public void DoDestroy(PlayerMechanics causedBy = null)
 	{
 		health = 0;
 		Destroy(gameObject);
 		AudioManager.Instance.Play3dSound("ProjectileDestruction", gameObject.transform.position);
 	}
 
-	public void DoDamage(int damage = 1)
+	public void DoDamage(int damage, PlayerMechanics causedBy = null)
 	{
 		if (health <= 0)
 			return;
@@ -45,13 +47,13 @@ public class ProjectileManager : MonoBehaviour, Destructable
 		Destructable gameObj = collision.gameObject.GetComponent<Destructable>();
 		if (gameObj != null)
         {
-			gameObj.DoDamage(damage);
+			gameObj.DoDamage(damage, shotBy);
 			DoDamage(health);
 			isBeingDestroyed = true;
         }
 		else if(health > 0)
 		{
-			DoDamage();
+			DoDamage(1);
 		}
     }
 }

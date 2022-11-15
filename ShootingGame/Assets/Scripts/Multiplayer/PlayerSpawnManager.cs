@@ -10,6 +10,8 @@ using UnityEngine.Windows;
 public class PlayerSpawnManager : MonoBehaviour
 {
 	[SerializeField]
+	List<Transform> spawnLocations;
+	[SerializeField]
 	GameObject playerPrefab;
 	[SerializeField]
 	CinemachineVirtualCamera followPlayerCam;
@@ -17,9 +19,10 @@ public class PlayerSpawnManager : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-		GameObject player = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(20, 10, 0), Quaternion.identity);
-		PhotonView photonView = player.gameObject.GetComponent<PhotonView>();
-		if ( photonView != null && photonView.IsMine)
+		Transform spawnTransf = spawnLocations[PhotonNetwork.LocalPlayer.ActorNumber % spawnLocations.Count];
+		GameObject player = PhotonNetwork.Instantiate(playerPrefab.name, spawnTransf.position, spawnTransf.rotation);
+		PlayerMechanics playerMechanics = player.GetComponent<PlayerMechanics>();
+		if ( playerMechanics.IsLocalPlayer )
 		{
 			followPlayerCam.Follow = player.transform.Find("PlayerCameraRoot");
 		}
