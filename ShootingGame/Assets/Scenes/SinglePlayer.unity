@@ -16079,8 +16079,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6ad1a7c6440f0148a70fdce908ce23f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hudTextAsset: {fileID: 460916167}
-  textVar: 'Enemies Left: {0}'
+  localPlayer: {fileID: 1633315372}
+  enemiesText: {fileID: 460916167}
+  livesText: {fileID: 2076255101}
+  enemiesTextVar: 'Enemies Left: {0}'
+  livesTextVar: 'Lives: {0}'
   endGameMessage: {fileID: 814367341}
 --- !u!4 &403321942 stripped
 Transform:
@@ -33633,6 +33636,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1633315372 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5681460579916984004, guid: dfa3fa6517c1ffa47948b771c2e8d1be, type: 3}
+  m_PrefabInstance: {fileID: 2444884961854039641}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e53304b533f5fbc4888401a509111713, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1635606912
