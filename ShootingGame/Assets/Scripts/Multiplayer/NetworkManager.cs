@@ -25,6 +25,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public delegate void UpdateRoomsList();
 	public static event UpdateRoomsList OnRoomsChanged;
 
+	public bool disconnectOnLeaveLobby = false;
+
 	static NetworkManager instance;
 	static public NetworkManager Instance
 	{
@@ -210,7 +212,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		base.OnLeftLobby();
 		Debug.Log("Lobby left!");
 		cachedRoomList.Clear();
-		DisconnectFromMaster();
+		if(disconnectOnLeaveLobby)
+			DisconnectFromMaster();
+
+		disconnectOnLeaveLobby = false;
 	}
 
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)

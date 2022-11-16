@@ -22,6 +22,7 @@ public class MainMenuButtons : MonoBehaviour
 
 	public void LeaveLobby()
 	{
+		NetworkManager.Instance.disconnectOnLeaveLobby = true;
 		NetworkManager.Instance.LeaveLobby();
 	}
 
