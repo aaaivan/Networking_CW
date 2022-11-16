@@ -22,6 +22,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 	HealthBar healthBar = null;
 
 	public int Health { get { return health; } }
+	public int LivesLeft { get { return lives - deathCount; } }
 	Vector3 respownTransform = Vector3.zero;
 	public Vector3 RespownPosition { get { return respownTransform; } set { respownTransform = value; } }
 
