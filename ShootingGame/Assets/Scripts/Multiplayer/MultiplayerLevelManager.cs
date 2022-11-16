@@ -23,7 +23,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	{
 		base.OnPlayerLeftRoom(otherPlayer);
 
-		if (PhotonNetwork.PlayerList.Length == 1)
+		if (PhotonNetwork.PlayerList.Length == 1 && !gameOverScreen.activeSelf)
 		{
 			winnerText.text = PhotonNetwork.PlayerList[0].NickName;
 			gameOverScreen.SetActive(true);
