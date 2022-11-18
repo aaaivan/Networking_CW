@@ -1415,6 +1415,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillRect: {fileID: 3448566043175720581}
+  playerMechanics: {fileID: 5681460579916984004}
 --- !u!1 &3448566044436027926
 GameObject:
   m_ObjectHideFlags: 0
@@ -1984,7 +1985,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lives: 3
   health: 5
-  healthBar: {fileID: 3448566043670110669}
   projectilePrefab: {fileID: 2557817864867074807, guid: 1abf5530c7f9cfa4d9c0b02d4f163f42, type: 3}
   spawnPosition: {fileID: 2444884960815117041}
   fireAngle: 5

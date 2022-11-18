@@ -17,12 +17,12 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 	int deathCount = 0;
 	[SerializeField]
 	int health = 3;
-	int currentHelath = 0;
-	[SerializeField]
-	HealthBar healthBar = null;
+	int currentHealth = 0;
 
 	public int Health { get { return health; } }
+	public int CurrentHealth { get { return currentHealth; } }
 	public int LivesLeft { get { return lives - deathCount; } }
+	public int Deaths { get { return deathCount; } }
 	Vector3 respownTransform = Vector3.zero;
 	public Vector3 RespownPosition { get { return respownTransform; } set { respownTransform = value; } }
 
@@ -51,8 +51,11 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 		isHuman = GetComponent<PlayerInput>() != null;
 		PhotonView photonView = GetComponent<PhotonView>();
 		isLocalPlayer = isHuman && (photonView == null || photonView.IsMine);
-		if(photonView != null)
+		if (photonView != null)
+		{
 			owner = photonView.Owner;
+			MultiplayerLevelManager.Instance.RegisterPlayer(owner, this);
+		}
 
 		playerColliders = GetComponents<Collider>();
 		RespownPosition = transform.position;
@@ -70,9 +73,13 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 			causedBy.owner.AddScore(1);
 		}
 
-
 		deathCount++;
-		if(deathCount < lives && OnPlayerKilled != null)
+		TriggerDeathEvents();
+	}
+
+	private void TriggerDeathEvents()
+	{
+		if (deathCount < lives && OnPlayerKilled != null)
 		{
 			if (OnPlayerKilled != null)
 			{
@@ -96,15 +103,15 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 			}
 		}
 	}
+
 	public void DoDamage(int damage, PlayerMechanics causedBy = null)
 	{
 		if (isHuman && !isLocalPlayer)
 			return;
 
 		Debug.Log("damage");
-		currentHelath -= damage;
-		healthBar.SetFillAmount((float)currentHelath/health);
-		if(currentHelath <= 0)
+		currentHealth -= damage;
+		if(currentHealth <= 0)
 		{
 			DoDestroy(causedBy);
 		}
@@ -115,8 +122,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 		if (isHuman && !isLocalPlayer)
 			return;
 
-		currentHelath = health;
-		healthBar.SetFillAmount(1.0f);
+		currentHealth = health;
 	}
 
 	public void Shoot()
@@ -147,12 +153,18 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 	{
 		if (stream.IsWriting)
 		{
-			stream.SendNext(currentHelath);
+			stream.SendNext(currentHealth);
+			stream.SendNext(deathCount);
 		}
 		else
 		{
-			currentHelath = (int)stream.ReceiveNext();
-			healthBar.SetFillAmount((float)currentHelath / health);
+			currentHealth = (int)stream.ReceiveNext();
+			int newDeathCount = (int)stream.ReceiveNext();
+			if(newDeathCount > deathCount)
+			{
+				deathCount = newDeathCount;
+				TriggerDeathEvents();
+			}
 		}
 	}
 }

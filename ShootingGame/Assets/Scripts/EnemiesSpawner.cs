@@ -8,11 +8,11 @@ public class EnemiesSpawner : MonoBehaviour
 	GameObject enemyPrefab;
 	[SerializeField]
 	Transform[] spawnPositions;
+	[SerializeField]
 	HUDManager hudManager;
 
 	private void Awake()
 	{
-		hudManager = GameObject.FindGameObjectsWithTag("HUD")[0].GetComponent<HUDManager>();
 		foreach(Transform t in spawnPositions)
 		{
 			Instantiate(enemyPrefab, t);

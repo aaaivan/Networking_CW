@@ -15978,7 +15978,7 @@ GameObject:
   - component: {fileID: 403131590}
   m_Layer: 5
   m_Name: HUD
-  m_TagString: HUD
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29754,6 +29754,7 @@ MonoBehaviour:
   spawnPositions:
   - {fileID: 1055979158}
   - {fileID: 1782593322}
+  hudManager: {fileID: 403131590}
 --- !u!43 &1219958555
 Mesh:
   m_ObjectHideFlags: 0

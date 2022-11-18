@@ -123,6 +123,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
+		base.OnMasterClientSwitched(newMasterClient);
+
 		if (startGameBtn != null)
 			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 

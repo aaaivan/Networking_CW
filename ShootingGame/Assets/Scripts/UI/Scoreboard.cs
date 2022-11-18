@@ -10,20 +10,59 @@ using UnityEngine;
 public class Scoreboard : MonoBehaviourPunCallbacks
 {
 	[SerializeField]
-	string playerScoreMessage = "Kills {0}";
+	TMP_Text timerField;
+	[SerializeField]
+	string timerString = "Time: {0}";
+	int currentTime = 0;
+
+	[SerializeField]
+	string playerScoreMessage = "Kills {0} (Deaths: {1})";
 	[SerializeField]
 	GameObject scoreEntryPrefab;
 	List<GameObject> scoreList = new List<GameObject>();
+
+	public override void OnEnable()
+	{
+		base.OnEnable();
+		PlayerMechanics.OnPlayerKilled += UpdateScoreboard;
+	}
+
+	public override void OnDisable()
+	{
+		base.OnDisable();
+		PlayerMechanics.OnPlayerKilled -= UpdateScoreboard;
+	}
 
 	private void Awake()
 	{
 		foreach(var player in PhotonNetwork.PlayerList)
 		{
 			player.SetScore(0);
-			var scroreEntry = Instantiate(scoreEntryPrefab, transform);
+			GameObject scroreEntry = Instantiate(scoreEntryPrefab, transform);
 			scroreEntry.transform.GetChild(0).GetComponent<TMP_Text>().text = player.NickName;
-			scroreEntry.transform.GetChild(1).GetComponent<TMP_Text>().text = string.Format(playerScoreMessage, player.GetScore());
+			scroreEntry.transform.GetChild(1).GetComponent<TMP_Text>().text = string.Format(playerScoreMessage, player.GetScore(), 0);
 			scoreList.Add(scroreEntry);
+		}
+	}
+
+	private void Update()
+	{
+		int time = (int)MultiplayerLevelManager.Instance.TimeLeft;
+		if (time != currentTime)
+		{
+			currentTime = time;
+			string timeStr = string.Format(timerString, currentTime);
+			timerField.text = timeStr;
+		}
+	}
+
+	public override void OnPlayerLeftRoom(Player otherPlayer)
+	{
+		base.OnPlayerLeftRoom(otherPlayer);
+
+		if (MultiplayerLevelManager.Instance.playersMap.ContainsKey(otherPlayer))
+		{
+			UpdateScoreboard(MultiplayerLevelManager.Instance.playersMap[otherPlayer]);
 		}
 	}
 
@@ -31,31 +70,86 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 	{
 		base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
 
-		List<Tuple<Photon.Realtime.Player, int>> players = new List<Tuple<Photon.Realtime.Player, int>>();
-		foreach (var player in PhotonNetwork.PlayerList)
+		if(MultiplayerLevelManager.Instance.playersMap.ContainsKey(targetPlayer))
 		{
-			players.Add(new Tuple<Photon.Realtime.Player, int>(player, player.GetScore()));
+			UpdateScoreboard(MultiplayerLevelManager.Instance.playersMap[targetPlayer]);
 		}
-		players.Sort((a, b) => b.Item2.CompareTo(a.Item2));
+	}
 
-		int maxScore = players[0].Item2;
+	public void UpdateScoreboard(PlayerMechanics _player)
+	{
+		List<Player> players = new List<Player>();
+		foreach(var p in PhotonNetwork.PlayerList)
+		{
+			if(MultiplayerLevelManager.Instance.playersMap.ContainsKey(p))
+			{
+				players.Add(p);
+			}
+		}
+
+		if(players.Count == 0)
+			return;
+
+		players.Sort((a, b) => PlayerEntriesCompare(a, b));
+
+		int maxScore = players[0].GetScore();
+		int minDeaths = MultiplayerLevelManager.Instance.playersMap[players[0]].Deaths;
+
 		for (int i = 0; i < scoreList.Count; ++i)
 		{
-			Photon.Realtime.Player p = players[i].Item1;
-			TMP_Text playerName = scoreList[i].transform.GetChild(0).GetComponent<TMP_Text>();
-			TMP_Text playerScore = scoreList[i].transform.GetChild(1).GetComponent<TMP_Text>();
-			playerName.text = p.NickName;
-			playerScore.text = string.Format(playerScoreMessage, p.GetScore());
-			if(p.GetScore() == maxScore)
+			if(i < players.Count)
 			{
-				playerName.color = new Color(1.0f,0.592f, 0.192f);
-				playerScore.color = new Color(1.0f, 0.592f, 0.192f);
+				scoreList[i].SetActive(true);
+				Player p = players[i];
+				int deaths = MultiplayerLevelManager.Instance.playersMap[p].Deaths;
+				TMP_Text playerName = scoreList[i].transform.GetChild(0).GetComponent<TMP_Text>();
+				TMP_Text playerScore = scoreList[i].transform.GetChild(1).GetComponent<TMP_Text>();
+				playerName.text = p.NickName;
+				playerScore.text = string.Format(playerScoreMessage, p.GetScore(), deaths);
+
+				// highlight winner
+				if (p.GetScore() == maxScore && deaths == minDeaths)
+				{
+					playerName.color = new Color(1.0f, 0.592f, 0.192f);
+					playerScore.color = new Color(1.0f, 0.592f, 0.192f);
+				}
+				else
+				{
+					playerName.color = Color.white;
+					playerScore.color = Color.white;
+				}
 			}
 			else
 			{
-				playerName.color = Color.white;
-				playerScore.color = Color.white;
+				scoreList[i].SetActive(false);
 			}
 		}
+	}
+
+	private int PlayerEntriesCompare(Photon.Realtime.Player a, Photon.Realtime.Player b)
+	{
+		PlayerMechanics p_a = MultiplayerLevelManager.Instance.playersMap[a];
+		PlayerMechanics p_b = MultiplayerLevelManager.Instance.playersMap[b];
+
+		if (a.GetScore() > b.GetScore())
+		{
+			return -1;
+		}
+		else if (a.GetScore() < b.GetScore())
+		{
+			return 1;
+		}
+		else
+		{
+			if (p_a.Deaths < p_b.Deaths)
+			{
+				return -1;
+			}
+			else if (p_a.Deaths > p_b.Deaths)
+			{
+				return 1;
+			}
+		}
+		return 0;
 	}
 }

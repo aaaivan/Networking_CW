@@ -1,5 +1,6 @@
 using Cinemachine;
 using Photon.Pun;
+using Photon.Realtime;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,16 +17,11 @@ public class PlayerSpawnManager : MonoBehaviour
 	[SerializeField]
 	CinemachineVirtualCamera followPlayerCam;
 
-	// Start is called before the first frame update
 	void Start()
     {
 		Transform spawnTransf = spawnLocations[PhotonNetwork.LocalPlayer.ActorNumber % spawnLocations.Count];
 		GameObject player = PhotonNetwork.Instantiate(playerPrefab.name, spawnTransf.position, spawnTransf.rotation);
-		PlayerMechanics playerMechanics = player.GetComponent<PlayerMechanics>();
-		if ( playerMechanics.IsLocalPlayer )
-		{
-			followPlayerCam.Follow = player.transform.Find("PlayerCameraRoot");
-			InputsManager.Instance.thirdPersonController = player.GetComponent<ThirdPersonController>();
-		}
+		followPlayerCam.Follow = player.transform.Find("PlayerCameraRoot");
+		InputsManager.Instance.thirdPersonController = player.GetComponent<ThirdPersonController>();
 	}
 }
