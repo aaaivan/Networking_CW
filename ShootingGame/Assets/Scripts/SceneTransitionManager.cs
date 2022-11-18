@@ -9,22 +9,27 @@ public class SceneTransitionManager : MonoBehaviour
 
 	static public SceneTransitionManager Instance
 	{
-		get
-		{
-			if (instance == null)
-				throw new UnityException("You need to add a SceneTransitionManager to your scene");
-			return instance;
-		}
+		get { return instance; }
 	}
 
 	private void OnDestroy()
 	{
-		instance = null; 
+		if(instance == this)
+		{
+			instance = null;
+		}
 	}
 
 	private void Awake()
 	{
-		instance = this;
+		if(instance == null)
+		{
+			instance = this;
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
 	}
 
 	public void LoadScene(string sceneName)
