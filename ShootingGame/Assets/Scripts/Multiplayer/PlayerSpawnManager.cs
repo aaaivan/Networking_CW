@@ -5,7 +5,6 @@ using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Windows;
 
 
 public class PlayerSpawnManager : MonoBehaviour
@@ -19,7 +18,19 @@ public class PlayerSpawnManager : MonoBehaviour
 
 	void Start()
     {
-		Transform spawnTransf = spawnLocations[PhotonNetwork.LocalPlayer.ActorNumber % spawnLocations.Count];
+		int index = -1;
+		for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+		{
+			if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return;
+
+		Transform spawnTransf = spawnLocations[index % spawnLocations.Count];
 		GameObject player = PhotonNetwork.Instantiate(playerPrefab.name, spawnTransf.position, spawnTransf.rotation);
 		followPlayerCam.Follow = player.transform.Find("PlayerCameraRoot");
 		InputsManager.Instance.thirdPersonController = player.GetComponent<ThirdPersonController>();

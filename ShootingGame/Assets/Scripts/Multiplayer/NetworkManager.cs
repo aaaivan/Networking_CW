@@ -78,7 +78,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		base.OnDisconnected(cause);
 		Debug.Log("Disconnected from the master server (" + cause + ")");
-		MenuNavigationManager.Instance.ShowMenu(1);
+		if (MenuNavigationManager.Instance != null)
+		{
+			MenuNavigationManager.Instance.ShowMenu(1);
+		}
 	}
 
 	public void CreateRoom(string name)
