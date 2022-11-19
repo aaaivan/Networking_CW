@@ -21,24 +21,24 @@ namespace StarterAssets
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
-		PhotonView photonView;
+		PlayerMechanics player;
 
 		private void Awake()
 		{
-			photonView = GetComponent<PhotonView>();
+			player = GetComponent<PlayerMechanics>();
 		}
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 		public void OnMove(InputValue value)
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!player.IsLocalPlayer)
 				return;
 			MoveInput(value.Get<Vector2>());
 		}
 
 		public void OnLook(InputValue value)
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!player.IsLocalPlayer)
 				return;
 			if (cursorInputForLook)
 			{
@@ -48,14 +48,14 @@ namespace StarterAssets
 
 		public void OnJump(InputValue value)
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!player.IsLocalPlayer)
 				return;
 			JumpInput(value.isPressed);
 		}
 
 		public void OnFire(InputValue value)
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!player.IsLocalPlayer)
 				return;
 			FireInput(value.isPressed);
 		}
@@ -84,9 +84,9 @@ namespace StarterAssets
 
 		private void OnApplicationFocus(bool hasFocus)
 		{
-			if (photonView != null && !photonView.IsMine)
+			if (!player.IsLocalPlayer)
 				return;
-			//SetCursorState(cursorLocked);
+			SetCursorState(cursorLocked);
 		}
 
 		private void SetCursorState(bool newState)

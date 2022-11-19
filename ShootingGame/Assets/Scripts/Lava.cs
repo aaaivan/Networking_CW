@@ -9,7 +9,11 @@ public class Lava : MonoBehaviour
 		Destructable gameObj = collision.gameObject.GetComponent<Destructable>();
 		if (gameObj != null)
 		{
-			gameObj.DoDestroy();
+			PlayerMechanics player = collision.gameObject.GetComponent<PlayerMechanics>();
+			if(player == null || !player.IsRemotePlayer)
+			{
+				gameObj.DoDestroy();
+			}
 		}
 	}
 }

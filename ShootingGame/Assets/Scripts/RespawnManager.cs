@@ -18,22 +18,24 @@ public class RespawnManager : MonoBehaviour
 
 	public void Respawn(PlayerMechanics player)
 	{
+		if(player.IsRemotePlayer)
+		{
+			return;
+		}
+
 		Vector3 respawnPosition = player.RespownPosition;
 		if(respawnPosition != null)
 		{
 			if (player.IsHuman)
 			{
-				if (player.IsLocalPlayer)
+				player.transform.position = respawnPosition;
+				ThirdPersonController tpc = player.gameObject.GetComponent<ThirdPersonController>();
+				if (tpc != null)
 				{
-					player.transform.position = respawnPosition;
-					ThirdPersonController tpc = player.gameObject.GetComponent<ThirdPersonController>();
-					if (tpc != null)
-					{
-						tpc.Reset();
-					}
-					Physics.SyncTransforms();
-					player.RestoreHealth();
+					tpc.Reset();
 				}
+				Physics.SyncTransforms();
+				player.RestoreHealth();
 			}
 			else
 			{

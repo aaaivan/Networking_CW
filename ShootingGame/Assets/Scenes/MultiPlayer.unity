@@ -57877,7 +57877,7 @@ MonoBehaviour:
   maxKills: 3
   gameOverScreen: {fileID: 807333263}
   scoreboard: {fileID: 145187042}
-  gameDuration: 3
+  gameDuration: 90
 --- !u!114 &2136020379
 MonoBehaviour:
   m_ObjectHideFlags: 0

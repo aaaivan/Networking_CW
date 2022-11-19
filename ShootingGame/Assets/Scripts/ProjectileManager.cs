@@ -47,7 +47,11 @@ public class ProjectileManager : MonoBehaviour, Destructable
 		Destructable gameObj = collision.gameObject.GetComponent<Destructable>();
 		if (gameObj != null)
         {
-			gameObj.DoDamage(damage, shotBy);
+			PlayerMechanics player = collision.gameObject.GetComponent<PlayerMechanics>();
+			if (player == null || !player.IsRemotePlayer)
+			{
+				gameObj.DoDamage(damage, shotBy);
+			}
 			DoDamage(health);
 			isBeingDestroyed = true;
         }

@@ -12,19 +12,57 @@ public class InputsManager : MonoBehaviour
 	{
 		get
 		{
-			if (instance == null)
-				throw new UnityException("You need to add an InputsManager to your scene");
 			return instance;
 		}
 	}
 
 	private void OnDestroy()
 	{
-		instance = null;
+		if(instance == this)
+		{
+			instance = null;
+		}
 	}
 
 	public void Awake()
 	{
-		instance = this;
+		if(instance == null)
+		{
+			instance = this;
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+	}
+
+	public void DisableThirdPersonInputs()
+	{
+		ThirdPersonController fpc = InputsManager.Instance.thirdPersonController;
+		GameObject player = fpc.gameObject;
+		StarterAssetsInputs inputs = player.GetComponent<StarterAssetsInputs>();
+		if (Input.mousePresent)
+		{
+			Cursor.visible = true;
+			Cursor.lockState = CursorLockMode.None;
+			inputs.cursorLocked = false;
+			inputs.cursorInputForLook = false;
+		}
+		fpc.DisableGameInputs();
+	}
+
+	public void EnableThirdPersonInputs()
+	{
+		ThirdPersonController fpc = InputsManager.Instance.thirdPersonController;
+		GameObject player = fpc.gameObject;
+		StarterAssetsInputs inputs = player.GetComponent<StarterAssetsInputs>();
+		if (Input.mousePresent)
+		{
+			Cursor.visible = false;
+			Cursor.lockState = CursorLockMode.Locked;
+			inputs.cursorLocked = true;
+			inputs.cursorInputForLook = true;
+		}
+		fpc.EnableGameInputs();
 	}
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6612388279954837562}
   - component: {fileID: 6605315799648972884}
   - component: {fileID: 6595009000973495342}
+  - component: {fileID: 164665158997160976}
   m_Layer: 0
   m_Name: EA_Plant_01a
   m_TagString: Untagged
@@ -83,6 +84,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &164665158997160976
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6617016114685770158}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 837a7eab4e2359e4ea384db3da30638c, type: 3}
 --- !u!1 &6617182133380539478
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,7 +107,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6619635586218564094}
-  - component: {fileID: 1788048143580044919}
   m_Layer: 0
   m_Name: EA_Plant_01a_Default
   m_TagString: Untagged
@@ -114,19 +128,5 @@ Transform:
   m_Children:
   - {fileID: 6612388279954837562}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &1788048143580044919
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6617182133380539478}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 1.08
-  m_Height: 3.03
-  m_Direction: 1
-  m_Center: {x: 0.09, y: 0.67, z: -0.11}

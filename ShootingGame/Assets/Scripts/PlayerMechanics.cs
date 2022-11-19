@@ -34,9 +34,10 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 	[SerializeField] float firePower = 2;
 
 	bool isHuman = true;
-	public bool IsHuman { get { return isHuman; } }
 	bool isLocalPlayer = false;
+	public bool IsHuman { get { return isHuman; } }
 	public bool IsLocalPlayer { get { return isLocalPlayer; } }
+	public bool IsRemotePlayer { get { return isHuman && !isLocalPlayer; } }
 
 	Photon.Realtime.Player owner = null;
 
@@ -59,14 +60,15 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 
 		playerColliders = GetComponents<Collider>();
 		RespownPosition = transform.position;
-		RestoreHealth();
+
+		if(!IsRemotePlayer)
+		{
+			RestoreHealth();
+		}
 	}
 
 	public void DoDestroy(PlayerMechanics causedBy = null)
 	{
-		if (isHuman && !isLocalPlayer)
-			return;
-
 		// Update score of the player who caused the damage
 		if(causedBy != null && causedBy.owner != null)
 		{
@@ -106,10 +108,6 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 
 	public void DoDamage(int damage, PlayerMechanics causedBy = null)
 	{
-		if (isHuman && !isLocalPlayer)
-			return;
-
-		Debug.Log("damage");
 		currentHealth -= damage;
 		if(currentHealth <= 0)
 		{
@@ -119,9 +117,6 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 
 	public void RestoreHealth()
 	{
-		if (isHuman && !isLocalPlayer)
-			return;
-
 		currentHealth = health;
 	}
 

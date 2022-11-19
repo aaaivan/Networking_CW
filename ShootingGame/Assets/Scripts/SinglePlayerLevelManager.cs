@@ -84,19 +84,7 @@ public class SinglePlayerLevelManager : MonoBehaviour
 
 	private void EndGame(bool hasWon)
 	{
-
-		ThirdPersonController fpc = InputsManager.Instance.thirdPersonController;
-		GameObject player = fpc.gameObject;
-		StarterAssetsInputs inputs = player.GetComponent<StarterAssetsInputs>();
-		if (Input.mousePresent)
-		{
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
-			inputs.cursorLocked = false;
-			inputs.cursorInputForLook = false;
-		}
-		fpc.DisableGameInputs();
-
+		InputsManager.Instance.DisableThirdPersonInputs();
 		isPlaying = false;
 		hud.ShowEndGame(hasWon);
 	}

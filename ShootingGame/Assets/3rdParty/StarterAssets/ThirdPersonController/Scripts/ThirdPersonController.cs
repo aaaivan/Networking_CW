@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -108,8 +109,8 @@ namespace StarterAssets
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
-		private PlayerMechanics _playerMechanics;
-		private PhotonView photonView;
+		private PlayerMechanics _player;
+		private PhotonView _photonView;
 
 		private const float _threshold = 0.01f;
 
@@ -135,16 +136,14 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+			_player = GetComponent<PlayerMechanics>();
+			_photonView = GetComponent<PhotonView>();
 
-			/*
 			if (UnityEngine.Input.mousePresent)
 			{
 				Cursor.lockState = CursorLockMode.Locked;
 				Cursor.visible = false;
 			}
-			*/
-
-			photonView = GetComponent<PhotonView>();
 		}
 
 		private void Start()
@@ -165,12 +164,11 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
-			_playerMechanics = GetComponent<PlayerMechanics>();
         }
 
         private void Update()
         {
-			if (!_playerMechanics.IsLocalPlayer)
+			if (!_player.IsLocalPlayer)
 				return;
 
 			_hasAnimator = TryGetComponent(out _animator);
@@ -183,7 +181,7 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-			if (!_playerMechanics.IsLocalPlayer)
+			if (!_player.IsLocalPlayer)
 				return;
 
 			CameraRotation();
@@ -199,9 +197,6 @@ namespace StarterAssets
 
         private void GroundedCheck()
         {
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
 			// set sphere position, with offset
 			Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
                 transform.position.z);
@@ -211,9 +206,6 @@ namespace StarterAssets
 
         private void CameraRotation()
         {
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
 			// if there is an input and camera position is not fixed
 			if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
@@ -237,9 +229,6 @@ namespace StarterAssets
 
         private void Move()
         {
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
 			// set target speed based on move speed
 			float targetSpeed = MoveSpeed;
 
@@ -293,9 +282,6 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
 			if (Grounded)
             {
                 // reset the fall timeout timer
@@ -368,36 +354,10 @@ namespace StarterAssets
                 new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
                 GroundedRadius);
         }
-
-        private void OnFootstep(AnimationEvent animationEvent)
-        {
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
-			if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                if (FootstepAudioClips.Length > 0)
-                {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
-                }
-            }
-        }
-
-		private void OnLand(AnimationEvent animationEvent)
-		{
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
-			if (animationEvent.animatorClipInfo.weight > 0.5f)
-			{
-				AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-			}
-		}
 		
 		private void Shoot()
 		{
-			if (!_playerMechanics.IsLocalPlayer)
+			if (!_player.IsLocalPlayer)
 				return;
 
 			if (_input.fire && Time.time > ShootingTimeout + _lastShotTime)
@@ -410,30 +370,27 @@ namespace StarterAssets
 
 		private void OnShoot()
 		{
-			if (!_playerMechanics.IsLocalPlayer)
+			if (!_player.IsLocalPlayer)
 				return;
 
-			if (photonView == null)
+			if (_photonView == null)
 			{
-				_playerMechanics.Shoot();
+				_player.Shoot();
 			}
 			else
 			{
-				photonView.RPC("DoShot", RpcTarget.AllViaServer);
+				_photonView.RPC("DoShot", RpcTarget.AllViaServer);
 			}
 		}
 
 		[PunRPC]
 		private void DoShot()
 		{
-			_playerMechanics.Shoot();
+			_player.Shoot();
 		}
 
 		public void Reset()
         {
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
 			Grounded = false;
 
             // player
@@ -448,17 +405,12 @@ namespace StarterAssets
 
 		public void DisableGameInputs()
 		{
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
 			PlayerInput input = GetComponent<PlayerInput>();
 			input.actions.Disable();
 		}
+
 		public void EnableGameInputs()
 		{
-			if (!_playerMechanics.IsLocalPlayer)
-				return;
-
 			PlayerInput input = GetComponent<PlayerInput>();
 			input.actions.Enable();
 		}
