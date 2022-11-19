@@ -13,20 +13,28 @@ public class MenuNavigationManager : MonoBehaviour
 	{
 		get
 		{
-			if (instance == null)
-				throw new UnityException("You need to add a MenuNavigationManager to your scene");
 			return instance;
 		}
 	}
 
 	public void OnDestroy()
 	{
-		instance = null;
+		if(instance == this)
+		{
+			instance = null;
+		}
 	}
 
 	private void Awake()
 	{
-		instance = this;
+		if(instance == null)
+		{
+			instance = this;
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
 	}
 	public void ShowMenu(int id)
 	{
