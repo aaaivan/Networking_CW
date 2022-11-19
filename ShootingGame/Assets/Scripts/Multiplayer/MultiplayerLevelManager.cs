@@ -16,6 +16,8 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	[SerializeField]
 	Scoreboard scoreboard = null;
 	[SerializeField]
+	RectTransform connectionLostPopUp = null;
+	[SerializeField]
 	float gameDuration = 120.0f;
 	float timeLeft;
 	bool playing = false;
@@ -168,6 +170,20 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	public override void OnDisconnected(DisconnectCause cause)
 	{
 		base.OnDisconnected(cause);
+		if(cause == DisconnectCause.DisconnectByClientLogic)
+		{
+			SceneTransitionManager.Instance.LoadScene("Main");
+		}
+		else
+		{
+			scoreboard.gameObject.SetActive(false);
+			gameOverScreen.gameObject.SetActive(false);
+			connectionLostPopUp.gameObject.SetActive(true);
+		}
+	}
+
+	public void QuitGame()
+	{
 		SceneTransitionManager.Instance.LoadScene("Main");
 	}
 }
