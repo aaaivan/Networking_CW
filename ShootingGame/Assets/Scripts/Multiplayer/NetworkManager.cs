@@ -138,12 +138,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		base.OnJoinRoomFailed(returnCode, message);
 		Debug.Log("Failed to join the specified room");
+		JoinLobby();
 	}
 
 	public override void OnJoinRandomFailed(short returnCode, string message)
 	{
 		base.OnJoinRandomFailed(returnCode, message);
 		Debug.Log("Failed to join a random room");
+		JoinLobby();
 	}
 
 	public void LeaveRoom()

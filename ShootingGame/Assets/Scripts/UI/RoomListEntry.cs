@@ -18,7 +18,6 @@ public class RoomListEntry : MonoBehaviour
 	public void JoinRoom()
 	{
 		NetworkManager networkManager = NetworkManager.Instance;
-		networkManager.LeaveLobby();
 		networkManager.JoinRoom(roomName);
 	}
 }
