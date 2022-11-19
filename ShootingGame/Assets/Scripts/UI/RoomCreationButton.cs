@@ -6,11 +6,11 @@ using UnityEngine;
 public class RoomCreationButton : MonoBehaviour
 {
 	[SerializeField]
-	TMP_Text roomName;
+	TMP_InputField roomName;
 
 	public void OnSubmit()
 	{
-		if (roomName.text.Length > 1)
+		if (roomName.text.Length > 0)
 		{
 			NetworkManager.Instance.CreateRoom(roomName.text);
 		}

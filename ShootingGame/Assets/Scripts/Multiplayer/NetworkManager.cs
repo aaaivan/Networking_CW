@@ -2,6 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
 	[SerializeField]
 	Button startGameBtn;
+	[SerializeField]
+	TMP_Text roomNameTakenWarning;
 	[SerializeField]
 	Button joinRandomRoomBtn;
 
@@ -25,6 +28,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public delegate void UpdateRoomsList();
 	public static event UpdateRoomsList OnRoomsChanged;
 
+	[HideInInspector]
 	public bool disconnectOnLeaveLobby = false;
 
 	static NetworkManager instance;
@@ -95,6 +99,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		base.OnCreateRoomFailed(returnCode, message);
 		Debug.Log("Failed to create room (" + returnCode + ").");
+		roomNameTakenWarning.gameObject.SetActive(true);
+		JoinLobby();
 	}
 
 	public void JoinRoom(string name)

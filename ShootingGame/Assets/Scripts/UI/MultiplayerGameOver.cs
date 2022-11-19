@@ -8,6 +8,8 @@ public class MultiplayerGameOver : MonoBehaviour
 {
 	[SerializeField]
 	TMP_Text winnerField;
+	[SerializeField]
+	string winnerString = "{0} won the game!";
 	List<string> winnerList = new List<string>();
 
 	public void SetWinners(List<string> _winners)
@@ -25,13 +27,13 @@ public class MultiplayerGameOver : MonoBehaviour
 			winnerList.Add(_winner);
 		}
 
-		string winnersString = "";
+		string winnersList = "";
 		for(int i = 0; i < winnerList.Count - 1; i++)
 		{
-			winnersString += winnerList[i];
-			winnersString += ", ";
+			winnersList += winnerList[i];
+			winnersList += ", ";
 		}
-		winnersString += winnerList[winnerList.Count - 1];
-		winnerField.text = winnersString;
+		winnersList += winnerList[winnerList.Count - 1];
+		winnerField.text = string.Format(winnerString, winnersList);
 	}
 }
