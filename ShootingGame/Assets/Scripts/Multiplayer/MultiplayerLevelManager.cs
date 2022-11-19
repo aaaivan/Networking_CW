@@ -17,10 +17,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	[SerializeField]
 	Scoreboard scoreboard = null;
 	[SerializeField]
-	RectTransform connectionLostPopUp = null;
-	[SerializeField]
-	RectTransform rematchMenu = null;
-	[SerializeField]
 	float gameDuration = 120.0f;
 	float timeLeft;
 	bool playing = false;
@@ -147,8 +143,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		playing = false;
 
 		gameOverScreen.SetWinners(winners);
-		gameOverScreen.gameObject.SetActive(true);
-		scoreboard.gameObject.SetActive(false);
+		MenuNavigationManager.Instance.ShowMenu(1);
 
 		// Disable players controls and show the mouse cursor
 		ThirdPersonController fpc = InputsManager.Instance.thirdPersonController;
@@ -184,9 +179,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		}
 		else
 		{
-			scoreboard.gameObject.SetActive(false);
-			gameOverScreen.gameObject.SetActive(false);
-			connectionLostPopUp.gameObject.SetActive(true);
+			MenuNavigationManager.Instance.ShowMenu(2);
 		}
 	}
 
@@ -228,9 +221,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		hash["readyToRematch"] = true;
 		PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 
-		scoreboard.gameObject.SetActive(false);
-		gameOverScreen.gameObject.SetActive(false);
-		connectionLostPopUp.gameObject.SetActive(false);
-		rematchMenu.gameObject.SetActive(true);
+		MenuNavigationManager.Instance.ShowMenu(3);
 	}
 }
