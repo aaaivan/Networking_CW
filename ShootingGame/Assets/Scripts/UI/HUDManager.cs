@@ -15,84 +15,60 @@ public class HUDManager : MonoBehaviour
 	[SerializeField]
 	TMP_Text livesText = null;
 	[SerializeField]
+	TMP_Text timerText = null;
+	[SerializeField]
 	string enemiesTextVar = "Enemies Left: {0}";
 	[SerializeField]
 	string livesTextVar = "Lives: {0}";
 	int enemiesCount = 0;
+	int livesCount = 0;
+	int timer = 0;
 	Transform hud;
 	Transform endGameScreen;
 	[SerializeField]
 	TMP_Text endGameMessage = null;
 
-	private void OnEnable()
-	{
-		PlayerMechanics.OnPlayerDead += UpdateEnemiesCounter;
-		PlayerMechanics.OnPlayerKilled += UpdateLivesCounter;
-	}
-
-	private void OnDisable()
-	{
-		PlayerMechanics.OnPlayerDead -= UpdateEnemiesCounter;
-		PlayerMechanics.OnPlayerKilled -= UpdateLivesCounter;
-	}
-
 	private void Awake()
 	{
-		enemiesText.text = string.Format(enemiesTextVar, enemiesCount);
-		livesText.text = string.Format(livesTextVar, localPlayer.LivesLeft);
 		hud = transform.GetChild(0);
 		endGameScreen = transform.GetChild(1);
 		hud.gameObject.SetActive(true);
 		endGameScreen.gameObject.SetActive(false);
 	}
 
-	public void NumberOfEnemiesSet(int n)
+	private void Start()
 	{
-		enemiesCount = n;
+		enemiesCount = SinglePlayerLevelManager.Instance.EnemiesCount;
+		livesCount = localPlayer.LivesLeft;
+		timer = SinglePlayerLevelManager.Instance.TimeLeft;
 		enemiesText.text = string.Format(enemiesTextVar, enemiesCount);
+		livesText.text = string.Format(livesTextVar, livesCount);
+		timerText.text = timer.ToString();
 	}
 
-	private void UpdateEnemiesCounter(PlayerMechanics player)
+	private void LateUpdate()
 	{
-		if(player.IsHuman)
+		if(enemiesCount != SinglePlayerLevelManager.Instance.EnemiesCount )
 		{
-			EndGame(false);
-		}
-		else
-		{
-			--enemiesCount;
+			enemiesCount = SinglePlayerLevelManager.Instance.EnemiesCount;
 			enemiesText.text = string.Format(enemiesTextVar, enemiesCount);
-			if (enemiesCount == 0)
-			{
-				EndGame(true);
-			}
 		}
-	}
-
-	private void UpdateLivesCounter(PlayerMechanics player)
-	{
-		if (player == localPlayer)
+		if(livesCount != localPlayer.LivesLeft)
 		{
-			livesText.text = string.Format(livesTextVar, localPlayer.LivesLeft);
+			livesCount = localPlayer.LivesLeft;
+			livesText.text = string.Format(livesTextVar, livesCount);
+		}
+		if(timer != SinglePlayerLevelManager.Instance.TimeLeft)
+		{
+			timer = SinglePlayerLevelManager.Instance.TimeLeft;
+			timerText.text = timer.ToString();
 		}
 	}
 
-	private void EndGame(bool hasWon)
+	public void ShowEndGame(bool hasWon)
 	{
 		hud.gameObject.SetActive(false);
 		endGameScreen.gameObject.SetActive(true);
-
-		ThirdPersonController fpc = InputsManager.Instance.thirdPersonController;
-		GameObject player = fpc.gameObject;
-		StarterAssetsInputs inputs = player.GetComponent<StarterAssetsInputs>();
-		if (Input.mousePresent)
-		{
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
-			inputs.cursorLocked = false;
-			inputs.cursorInputForLook = false;
-		}
-		fpc.DisableGameInputs();
 
 		if (hasWon)
 		{

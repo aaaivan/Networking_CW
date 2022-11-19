@@ -8,15 +8,32 @@ public class EnemiesSpawner : MonoBehaviour
 	GameObject enemyPrefab;
 	[SerializeField]
 	Transform[] spawnPositions;
-	[SerializeField]
-	HUDManager hudManager;
+	public int EnemiesNumber { get { return spawnPositions.Length; } }
+
+	static EnemiesSpawner instance;
+	static public EnemiesSpawner Instance { get { return instance; } }
+
+	private void OnDestroy()
+	{
+		if(instance == this)
+		{
+			instance = null;
+		}
+	}
 
 	private void Awake()
 	{
-		foreach(Transform t in spawnPositions)
+		if(instance == null)
 		{
-			Instantiate(enemyPrefab, t);
+			instance = this;
+			foreach (Transform t in spawnPositions)
+			{
+				Instantiate(enemyPrefab, t);
+			}
 		}
-		hudManager.NumberOfEnemiesSet(spawnPositions.Length);
+		else
+		{
+			Destroy(gameObject);
+		}
 	}
 }
