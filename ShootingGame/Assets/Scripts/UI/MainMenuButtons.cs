@@ -39,6 +39,6 @@ public class MainMenuButtons : MonoBehaviour
 	{
 		PhotonNetwork.CurrentRoom.IsOpen = false;
 		PhotonNetwork.CurrentRoom.IsVisible = false;
-		SceneTransitionManager.Instance.LoadScene("MultiPlayer");
+		PhotonNetwork.LoadLevel("MultiPlayer");
 	}
 }

@@ -229,7 +229,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 		foreach (RoomInfo room in roomList)
 		{
-			if (!room.IsOpen || !room.IsVisible || room.RemovedFromList)
+			if (!room.IsOpen || !room.IsVisible || room.RemovedFromList || room.PlayerCount == room.MaxPlayers)
 			{
 				if (cachedRoomList.ContainsKey(room.Name))
 				{

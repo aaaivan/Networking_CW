@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 {
@@ -18,10 +19,14 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	[SerializeField]
 	RectTransform connectionLostPopUp = null;
 	[SerializeField]
+	RectTransform rematchMenu = null;
+	[SerializeField]
 	float gameDuration = 120.0f;
 	float timeLeft;
 	bool playing = false;
 	public float TimeLeft { get { return timeLeft; } }
+
+	PhotonView phView;
 
 	public Dictionary<Player, PlayerMechanics> playersMap = new Dictionary<Player, PlayerMechanics>();
 
@@ -46,6 +51,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			instance = this;
 			timeLeft = gameDuration;
 			playing = true;
+			phView = GetComponent<PhotonView>();
 		}
 		else
 		{
@@ -69,8 +75,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			timeLeft -= Time.deltaTime;
 			if (timeLeft < 0)
 			{
-				playing = false;
-
 				List<string> winners;
 				ComputeWinners(out winners);
 				EndGame(winners);
@@ -138,6 +142,10 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	private void EndGame(List<string> winners)
 	{
+		if (!playing)
+			return;
+		playing = false;
+
 		gameOverScreen.SetWinners(winners);
 		gameOverScreen.gameObject.SetActive(true);
 		scoreboard.gameObject.SetActive(false);
@@ -182,8 +190,47 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		}
 	}
 
-	public void QuitGame()
+	public void QuitGameOffline()
 	{
 		SceneTransitionManager.Instance.LoadScene("Main");
+	}
+
+
+	public void StartRematch()
+	{
+		phView.RPC("QuitIfNotReadyAndStart", RpcTarget.AllViaServer);
+	}
+
+	[PunRPC]
+	private void QuitIfNotReadyAndStart()
+	{
+		bool ready = false;
+		if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("readyToRematch"))
+		{
+			ready = (bool)PhotonNetwork.LocalPlayer.CustomProperties["readyToRematch"];
+			ExitGames.Client.Photon.Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
+			hash["readyToRematch"] = false;
+			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+		}
+		if (ready)
+		{
+			PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().buildIndex);
+		}
+		else
+		{
+			LeaveGame();
+		}
+	}
+
+	public void SetReadyForRematch()
+	{
+		ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();
+		hash["readyToRematch"] = true;
+		PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+
+		scoreboard.gameObject.SetActive(false);
+		gameOverScreen.gameObject.SetActive(false);
+		connectionLostPopUp.gameObject.SetActive(false);
+		rematchMenu.gameObject.SetActive(true);
 	}
 }

@@ -41,6 +41,8 @@ MonoBehaviour:
   - RespawnSpaceship
   - DoShot
   - RegisterPlayer
+  - QuitIfNotReady
+  - QuitIfNotReadyAndStart
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
