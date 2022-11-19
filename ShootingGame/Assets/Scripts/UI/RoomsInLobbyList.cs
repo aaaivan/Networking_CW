@@ -10,10 +10,12 @@ public class RoomsInLobbyList : MonoBehaviour
 	[SerializeField]
 	GameObject listEntryPrefab;
 	bool roomListDirty = true;
+	bool listStyleDirty = true;
 
 	private void OnEnable()
 	{
 		roomListDirty = true;
+		listStyleDirty = true;
 		NetworkManager.OnRoomsChanged += DirtyRoomList;
 		StartCoroutine(UpdateRoomList());
 	}
@@ -27,17 +29,21 @@ public class RoomsInLobbyList : MonoBehaviour
 
 	void Update()
 	{
-		int children = transform.childCount;
-		for (int i = 0; i < children; i++)
+		if(listStyleDirty)
 		{
-			Image background = transform.GetChild(i).GetComponent<Image>();
-			if (i % 2 == 0)
+			listStyleDirty = false;
+			int children = transform.childCount;
+			for (int i = 0; i < children; i++)
 			{
-				background.color = new Color(background.color.r, background.color.g, background.color.b, 0.4f);
-			}
-			else
-			{
-				background.color = new Color(background.color.r, background.color.g, background.color.b, 0.1f);
+				Image background = transform.GetChild(i).GetComponent<Image>();
+				if (i % 2 == 0)
+				{
+					background.color = new Color(background.color.r, background.color.g, background.color.b, 0.4f);
+				}
+				else
+				{
+					background.color = new Color(background.color.r, background.color.g, background.color.b, 0.1f);
+				}
 			}
 		}
 	}
@@ -50,6 +56,7 @@ public class RoomsInLobbyList : MonoBehaviour
 			{
 				Debug.Log("Updating room list");
 				roomListDirty = false;
+				listStyleDirty = true;
 				ClearRoomEntries();
 
 				Dictionary<string, RoomInfo> rooms;
@@ -64,7 +71,7 @@ public class RoomsInLobbyList : MonoBehaviour
 					entry.GetComponent<RoomListEntry>().RoomName = room.Key;
 				}
 			}
-
+			// check for updates in the room list every 1 second
 			yield return new WaitForSeconds(1);
 		}
 	}

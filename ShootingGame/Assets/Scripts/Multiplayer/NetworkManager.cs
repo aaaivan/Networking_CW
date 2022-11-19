@@ -36,21 +36,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		get
 		{
-			if (instance == null)
-				throw new UnityException("You need to add a NetworkManager to your scene");
 			return instance;
 		}
 	}
 
 	private void OnDestroy()
 	{
-		instance = null;
+		if(instance == this)
+		{
+			instance = null;
+		}
 	}
 
 	private void Awake()
 	{
-		instance = this;
-		PhotonNetwork.AutomaticallySyncScene = true;
+		if(instance == null)
+		{
+			instance = this;
+			PhotonNetwork.AutomaticallySyncScene = true;
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
 	}
 
 	public void ConnectToMaster(string id)
