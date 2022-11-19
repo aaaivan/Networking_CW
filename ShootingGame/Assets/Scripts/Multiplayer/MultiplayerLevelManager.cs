@@ -18,9 +18,9 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	Scoreboard scoreboard = null;
 	[SerializeField]
 	float gameDuration = 120.0f;
-	float timeLeft;
+	float startTime = 0;
 	bool playing = false;
-	public float TimeLeft { get { return timeLeft; } }
+	public float TimeLeft { get { return startTime + gameDuration - Time.time; } }
 
 	PhotonView phView;
 
@@ -45,7 +45,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		if(instance == null)
 		{
 			instance = this;
-			timeLeft = gameDuration;
+			startTime = Time.time;
 			playing = true;
 			phView = GetComponent<PhotonView>();
 		}
@@ -66,15 +66,11 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	private void Update()
 	{
-		if(playing)
+		if (playing && TimeLeft < 0)
 		{
-			timeLeft -= Time.deltaTime;
-			if (timeLeft < 0)
-			{
-				List<string> winners;
-				ComputeWinners(out winners);
-				EndGame(winners);
-			}
+			List<string> winners;
+			ComputeWinners(out winners);
+			EndGame(winners);
 		}
 	}
 
