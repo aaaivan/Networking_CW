@@ -370,14 +370,14 @@ namespace StarterAssets
 
 		private void OnShoot()
 		{
-			if (!_player.IsLocalPlayer)
+			if (!_player.IsLocalPlayer) // only trigger shots on the player we own!
 				return;
 
-			if (_photonView == null)
+			if (_photonView == null) // single player Shoot()
 			{
 				_player.Shoot();
 			}
-			else
+			else // multi player Shoot(): triggers for all clients
 			{
 				_photonView.RPC("DoShot", RpcTarget.AllViaServer);
 			}

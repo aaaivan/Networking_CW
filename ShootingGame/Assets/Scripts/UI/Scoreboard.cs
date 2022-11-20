@@ -58,8 +58,6 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerLeftRoom(Player otherPlayer)
 	{
-		base.OnPlayerLeftRoom(otherPlayer);
-
 		if (MultiplayerLevelManager.Instance.playersMap.ContainsKey(otherPlayer))
 		{
 			UpdateScoreboard(MultiplayerLevelManager.Instance.playersMap[otherPlayer]);
@@ -68,9 +66,9 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
 	{
-		base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
-
-		if(MultiplayerLevelManager.Instance.playersMap.ContainsKey(targetPlayer))
+		// check whether the score is among the changed properties
+		if(changedProps.ContainsKey(PunPlayerScores.PlayerScoreProp) &&
+		   MultiplayerLevelManager.Instance.playersMap.ContainsKey(targetPlayer))
 		{
 			UpdateScoreboard(MultiplayerLevelManager.Instance.playersMap[targetPlayer]);
 		}

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
@@ -20,6 +21,8 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 
 	List<GameObject> onlinePlayerEntries = new List<GameObject>();
 	List<GameObject> readyPlayerEntries = new List<GameObject>();
+
+	public const string readyToRematchKey = "readyToRematch";
 
 	public override void OnEnable()
 	{
@@ -50,9 +53,9 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 			{
 				Photon.Realtime.Player player = PhotonNetwork.PlayerList[i];
 				bool ready = false;
-				if (player.CustomProperties.ContainsKey("readyToRematch"))
+				if (player.CustomProperties.ContainsKey(readyToRematchKey))
 				{
-					ready = (bool)player.CustomProperties["readyToRematch"];
+					ready = (bool)player.CustomProperties[readyToRematchKey];
 					if (ready)
 					{
 						readyGO.SetActive(true);
@@ -73,7 +76,7 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
 	{
-		if(changedProps.ContainsKey("readyToRematch"))
+		if(changedProps.ContainsKey(readyToRematchKey))
 		{
 			RefreshPlayerLists();
 		}
@@ -81,13 +84,11 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerLeftRoom(Player otherPlayer)
 	{
-		base.OnPlayerLeftRoom(otherPlayer);
 		RefreshPlayerLists();
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
-		base.OnMasterClientSwitched(newMasterClient);
 		startButton.gameObject.SetActive(PhotonNetwork.LocalPlayer.IsMasterClient);
 	}
 }

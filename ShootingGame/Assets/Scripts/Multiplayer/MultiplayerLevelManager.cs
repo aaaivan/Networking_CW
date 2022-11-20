@@ -158,7 +158,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	public override void OnDisconnected(DisconnectCause cause)
 	{
-		base.OnDisconnected(cause);
 		if(cause == DisconnectCause.DisconnectByClientLogic)
 		{
 			SceneTransitionManager.Instance.LoadScene("Main");
@@ -184,11 +183,11 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	private void QuitIfNotReadyAndStart()
 	{
 		bool ready = false;
-		if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("readyToRematch"))
+		if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(RematchScreen.readyToRematchKey))
 		{
-			ready = (bool)PhotonNetwork.LocalPlayer.CustomProperties["readyToRematch"];
+			ready = (bool)PhotonNetwork.LocalPlayer.CustomProperties[RematchScreen.readyToRematchKey];
 			ExitGames.Client.Photon.Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
-			hash["readyToRematch"] = false;
+			hash[RematchScreen.readyToRematchKey] = false;
 			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 		}
 		if (ready)
@@ -204,7 +203,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	public void SetReadyForRematch()
 	{
 		ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();
-		hash["readyToRematch"] = true;
+		hash[RematchScreen.readyToRematchKey] = true;
 		PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 
 		MenuNavigationManager.Instance.ShowMenu(3);

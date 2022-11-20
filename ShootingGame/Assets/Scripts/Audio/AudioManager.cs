@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
 			return instance;
 		}
 	}
+
 	private void Awake()
 	{
 		if (instance == null)
@@ -25,7 +26,7 @@ public class AudioManager : MonoBehaviour
 			DontDestroyOnLoad(gameObject);
 			instance = this;
 		}
-		else if (instance != null)
+		else
 		{
 			Destroy(gameObject);
 		}

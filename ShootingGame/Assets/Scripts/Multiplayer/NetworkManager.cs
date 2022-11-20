@@ -70,7 +70,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnConnectedToMaster()
 	{
-		base.OnConnectedToMaster();
 		Debug.Log(playerId + " has connected to the master sever!");
 		MenuNavigationManager.Instance.ShowMenu(2);
 		JoinLobby();
@@ -84,7 +83,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnDisconnected(DisconnectCause cause)
 	{
-		base.OnDisconnected(cause);
 		Debug.Log("Disconnected from the master server (" + cause + ")");
 		if (MenuNavigationManager.Instance != null)
 		{
@@ -103,7 +101,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnCreatedRoom()
 	{
-		base.OnCreatedRoom();
 		Debug.Log("Room has been created!");
 	}
 	public override void OnCreateRoomFailed(short returnCode, string message)
@@ -126,7 +123,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnJoinedRoom()
 	{
-		base.OnJoinedRoom();
 		Debug.Log("Room joined successfully!");
 		MenuNavigationManager.Instance.ShowMenu(5);
 		if (startGameBtn != null)
@@ -140,8 +136,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
-		base.OnMasterClientSwitched(newMasterClient);
-
 		if (startGameBtn != null)
 			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 
@@ -153,14 +147,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnJoinRoomFailed(short returnCode, string message)
 	{
-		base.OnJoinRoomFailed(returnCode, message);
 		Debug.Log("Failed to join the specified room");
 		JoinLobby();
 	}
 
 	public override void OnJoinRandomFailed(short returnCode, string message)
 	{
-		base.OnJoinRandomFailed(returnCode, message);
 		Debug.Log("Failed to join a random room");
 		JoinLobby();
 	}
@@ -172,7 +164,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnLeftRoom()
 	{
-		base.OnLeftRoom();
 		Debug.Log("Room has been left.");
 		MenuNavigationManager.Instance.ShowMenu(2);
 		JoinLobby();
@@ -180,7 +171,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerEnteredRoom(Player newPlayer)
 	{
-		base.OnPlayerEnteredRoom(newPlayer);
 		if (OnPlayersChanged != null)
 		{
 			OnPlayersChanged.Invoke();
@@ -194,7 +184,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerLeftRoom(Player otherPlayer)
 	{
-		base.OnPlayerLeftRoom(otherPlayer);
 		if (OnPlayersChanged != null)
 		{
 			OnPlayersChanged.Invoke();
@@ -218,7 +207,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnJoinedLobby()
 	{
-		base.OnJoinedLobby();
 		Debug.Log("Lobby joined"!);
 		joinRandomRoomBtn.interactable = cachedRoomList.Count > 0;
 	}
@@ -230,7 +218,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnLeftLobby()
 	{
-		base.OnLeftLobby();
 		Debug.Log("Lobby left!");
 		cachedRoomList.Clear();
 		if(disconnectOnLeaveLobby)
@@ -241,7 +228,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)
 	{
-		base.OnRoomListUpdate(roomList);
 		Debug.Log("Number of rooms: " + roomList.Count);
 
 		foreach (RoomInfo room in roomList)
