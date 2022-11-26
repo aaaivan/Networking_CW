@@ -94,7 +94,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
 	{
 		// if a player has maxKills, end the game
-		if(targetPlayer.GetScore() >= maxKills)
+		if(changedProps.ContainsKey(PunPlayerScores.PlayerScoreProp) && targetPlayer.GetScore() >= maxKills)
 		{
 			List<string> winners;
 			ComputeWinners(out winners); 
@@ -196,6 +196,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	[PunRPC]
 	private void QuitIfNotReadyAndStart()
 	{
+		PhotonNetwork.LocalPlayer.CustomProperties[PunPlayerScores.PlayerScoreProp] = 0;
 		bool ready = false;
 		// check whether the local player has the "readyToRematch" custom property set to true
 		if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(RematchScreen.readyToRematchKey))
@@ -209,6 +210,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		{
 			// This needs to be called on all clients that will play another game, and not only the master client
 			// because PhotonNetwork.LoadLevel does not synchronise across all player when re-loading the current scene
+			PhotonNetwork.IsMessageQueueRunning = false;
 			PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().buildIndex);
 		}
 		else
