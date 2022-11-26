@@ -23,12 +23,12 @@ public class SinglePlayerLevelManager : MonoBehaviour
 
 	private void OnEnable()
 	{
-		PlayerMechanics.OnPlayerDead += UpdateEnemiesCounter;
+		PlayerMechanics.OnPlayerDead += UpdatePlayersStillAlive;
 	}
 
 	private void OnDisable()
 	{
-		PlayerMechanics.OnPlayerDead -= UpdateEnemiesCounter;
+		PlayerMechanics.OnPlayerDead -= UpdatePlayersStillAlive;
 	}
 
 	private void OnDestroy()
@@ -60,13 +60,19 @@ public class SinglePlayerLevelManager : MonoBehaviour
 
 	private void Update()
 	{
+		// if the timer reaches 0, end the game.
 		if(isPlaying && TimeLeft <= 0)
 		{
 			EndGame(false);
 		}
 	}
 
-	private void UpdateEnemiesCounter(PlayerMechanics player)
+	/// <summary>
+	/// If the dead player is an enemy update the enemies counter.
+	/// if it's the local player, show game over.
+	/// </summary>
+	/// <param name="player"> dead player </param>
+	private void UpdatePlayersStillAlive(PlayerMechanics player)
 	{
 		if (player.IsLocalPlayer)
 		{
@@ -82,6 +88,10 @@ public class SinglePlayerLevelManager : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// show the game over screen
+	/// </summary>
+	/// <param name="hasWon"> has the local player won? </param>
 	private void EndGame(bool hasWon)
 	{
 		InputsManager.Instance.DisableThirdPersonInputs();

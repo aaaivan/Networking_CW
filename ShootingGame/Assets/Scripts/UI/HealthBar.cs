@@ -9,7 +9,8 @@ public class HealthBar : MonoBehaviour
 	[SerializeField]
 	PlayerMechanics playerMechanics;
 	float fillAmount = 1.0f;
-	Camera cam;
+	Camera cam; // main camera
+
 	private void Awake()
 	{
 		cam = GameObject.FindGameObjectsWithTag("MainCamera")[0].GetComponent<Camera>();
@@ -18,8 +19,10 @@ public class HealthBar : MonoBehaviour
 
 	private void LateUpdate()
 	{
+		// billboarding code
 		transform.LookAt(transform.position + cam.transform.forward);
 
+		// check if the health of the player has changed. If yes, update the health bar.
 		float newFill = (float)playerMechanics.CurrentHealth / playerMechanics.Health;
 		if(newFill != fillAmount)
 		{
@@ -27,6 +30,10 @@ public class HealthBar : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// set the fill amount of the health bar
+	/// </summary>
+	/// <param name="_fill"> fill amount, should be between 0 and 1 </param>
 	public void SetFillAmount(float _fill)
 	{
 		_fill = Mathf.Clamp01(_fill);

@@ -9,7 +9,7 @@ public class PlayersInRoomList : MonoBehaviour
 {
 	[SerializeField]
 	GameObject listEntryPrefab;
-	bool playerListDirty = true;
+	bool playerListDirty = true; // if true, we need to update the room list
 
 	private void OnEnable()
 	{
@@ -29,22 +29,22 @@ public class PlayersInRoomList : MonoBehaviour
 	{
 		while (true)
 		{
-			if(playerListDirty)
+			if(playerListDirty) // list needs to be updated
 			{
-				Debug.Log("Updating player list");
 				playerListDirty = false;
 				ClearPlayerEntries();
 
 				Player[] players;
 				NetworkManager.Instance.PlayersGet(out players);
 
+				// re-build the players list
 				foreach(var player in players)
 				{
 					GameObject entry = Instantiate(listEntryPrefab, transform);
 					entry.GetComponent<TMP_Text>().text = player.NickName;
 				}
 			}
-			yield return new WaitForSeconds(1);
+			yield return new WaitForSeconds(1); // check if the list needs to be refreshed every 1 second
 		}
 	}
 

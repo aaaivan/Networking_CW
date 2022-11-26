@@ -4,6 +4,9 @@ using System.Collections.Specialized;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Game over screen for th emultiplayer game
+/// </summary>
 public class MultiplayerGameOver : MonoBehaviour
 {
 	[SerializeField]
@@ -12,23 +15,23 @@ public class MultiplayerGameOver : MonoBehaviour
 	string winnerString = "{0} won the game!";
 	List<string> winnerList = new List<string>();
 
+	/// <summary>
+	/// Add the names of the winners to the game over screen
+	/// </summary>
+	/// <param name="_winners"> name of the winners </param>
 	public void SetWinners(List<string> _winners)
 	{
 		foreach(var winner in _winners)
 		{
-			SetWinner(winner);
-		}
-	}
-
-	public void SetWinner(string _winner)
-	{
-		if(!winnerList.Contains(_winner))
-		{
-			winnerList.Add(_winner);
+			if (!winnerList.Contains(winner))
+			{
+				winnerList.Add(winner);
+			}
 		}
 
+		// build the winners message
 		string winnersList = "";
-		for(int i = 0; i < winnerList.Count - 1; i++)
+		for (int i = 0; i < winnerList.Count - 1; i++)
 		{
 			winnersList += winnerList[i];
 			winnersList += ", ";

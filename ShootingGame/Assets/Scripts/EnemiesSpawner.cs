@@ -28,6 +28,7 @@ public class EnemiesSpawner : MonoBehaviour
 			instance = this;
 			foreach (Transform t in spawnPositions)
 			{
+				// instantiate an enemy in each spawn position
 				Instantiate(enemyPrefab, t);
 			}
 		}

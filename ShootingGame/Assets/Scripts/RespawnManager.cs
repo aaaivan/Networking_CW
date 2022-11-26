@@ -16,9 +16,13 @@ public class RespawnManager : MonoBehaviour
 		PlayerMechanics.OnPlayerKilled -= Respawn;
 	}
 
+	/// <summary>
+	/// Respawn player at their respawn location
+	/// </summary>
+	/// <param name="player"> player or enemy to respawn </param>
 	public void Respawn(PlayerMechanics player)
 	{
-		if(player.IsRemotePlayer)
+		if(player.IsRemotePlayer) // remote player will handle their respawn themselves
 		{
 			return;
 		}
@@ -26,7 +30,7 @@ public class RespawnManager : MonoBehaviour
 		Vector3 respawnPosition = player.RespownPosition;
 		if(respawnPosition != null)
 		{
-			if (player.IsHuman)
+			if (player.IsHuman) // the player is a human character
 			{
 				player.transform.position = respawnPosition;
 				ThirdPersonController tpc = player.gameObject.GetComponent<ThirdPersonController>();
@@ -34,10 +38,10 @@ public class RespawnManager : MonoBehaviour
 				{
 					tpc.Reset();
 				}
-				Physics.SyncTransforms();
+				Physics.SyncTransforms(); // needed to notify the Physics engine about the change in Transform;
 				player.RestoreHealth();
 			}
-			else
+			else // the player is an AI controlled character
 			{
 				NavMeshAgent agent = player.gameObject.GetComponent<NavMeshAgent>();
 				agent.Warp(respawnPosition);

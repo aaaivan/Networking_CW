@@ -11,13 +11,13 @@ using UnityEngine.SceneManagement;
 public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 {
 	[SerializeField]
-	int maxKills = 0;
+	int maxKills = 3; // num of kills to win the game
 	[SerializeField]
 	MultiplayerGameOver gameOverScreen = null;
 	[SerializeField]
 	Scoreboard scoreboard = null;
 	[SerializeField]
-	float gameDuration = 120.0f;
+	float gameDuration = 120.0f; // in seconds
 	float startTime = 0;
 	bool playing = false;
 	public float TimeLeft { get { return startTime + gameDuration - Time.time; } }
@@ -55,6 +55,11 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		}
 	}
 
+	/// <summary>
+	/// Add an online player to the dictionary that maps each Photon.Realtime.Player to the PlayerMechanics component used by it
+	/// </summary>
+	/// <param name="photonPlayer"> online player </param>
+	/// <param name="gameObjPlayer"> PlayerMechanics component attached to the character controlled by the opnline player </param>
 	public void RegisterPlayer(Player photonPlayer, PlayerMechanics gameObjPlayer)
 	{
 		if (!playersMap.ContainsKey(photonPlayer))
@@ -66,6 +71,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	private void Update()
 	{
+		// check who won if the time runs out
 		if (playing && TimeLeft < 0)
 		{
 			List<string> winners;
@@ -76,8 +82,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerLeftRoom(Player otherPlayer)
 	{
-		base.OnPlayerLeftRoom(otherPlayer);
-
+		// if there is only one player left in the room, end the game
 		if (PhotonNetwork.PlayerList.Length == 1 && playing)
 		{
 			List<string> winners;
@@ -88,8 +93,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
 	{
-		base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
-
+		// if a player has maxKills, end the game
 		if(targetPlayer.GetScore() >= maxKills)
 		{
 			List<string> winners;
@@ -98,6 +102,11 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		}
 	}
 
+	/// <summary>
+	/// Check who won the game. The winner is the player with the most kills.
+	/// In the case of a tie, the player with the lowest death count wins.
+	/// </summary>
+	/// <param name="winners"> list populated with the winners </param>
 	private void ComputeWinners(out List<string> winners)
 	{
 		winners = new List<string>();
@@ -132,6 +141,11 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		}
 	}
 
+	/// <summary>
+	/// End the game and display the game over screen with the winners.
+	/// Also, disable the third person controls.
+	/// </summary>
+	/// <param name="winners">winners whoose nicknames are displayed on the game over screen</param>
 	private void EndGame(List<string> winners)
 	{
 		if (!playing)
@@ -162,7 +176,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		{
 			SceneTransitionManager.Instance.LoadScene("Main");
 		}
-		else
+		else // if we disconnected because of a network issue, show the disconnection message
 		{
 			MenuNavigationManager.Instance.ShowMenu(2);
 		}
@@ -173,7 +187,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		SceneTransitionManager.Instance.LoadScene("Main");
 	}
 
-
 	public void StartRematch()
 	{
 		phView.RPC("QuitIfNotReadyAndStart", RpcTarget.AllViaServer);
@@ -183,6 +196,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	private void QuitIfNotReadyAndStart()
 	{
 		bool ready = false;
+		// check whether the local player has the "readyToRematch" custom property set to true
 		if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(RematchScreen.readyToRematchKey))
 		{
 			ready = (bool)PhotonNetwork.LocalPlayer.CustomProperties[RematchScreen.readyToRematchKey];
@@ -190,16 +204,22 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			hash[RematchScreen.readyToRematchKey] = false;
 			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 		}
-		if (ready)
+		if (ready) // if player is ready to rematch, reload the multiplayer level
 		{
+			// This needs to be called on all clients that will play another game, and not only the master client
+			// because PhotonNetwork.LoadLevel does not synchronise across all player when re-loading the current scene
 			PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().buildIndex);
 		}
 		else
 		{
+			// Kick players that are not ready to rematch out of the room
 			LeaveGame();
 		}
 	}
 
+	/// <summary>
+	/// Set the player as ready to rematch through custom properties
+	/// </summary>
 	public void SetReadyForRematch()
 	{
 		ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();

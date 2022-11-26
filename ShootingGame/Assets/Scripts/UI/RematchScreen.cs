@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
@@ -28,7 +27,7 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 	{
 		base.OnEnable();
 		RefreshPlayerLists();
-		startButton.gameObject.SetActive(PhotonNetwork.LocalPlayer.IsMasterClient);
+		startButton.gameObject.SetActive(PhotonNetwork.LocalPlayer.IsMasterClient); // only the master client can start a new game
 	}
 
 	private void Awake()
@@ -40,6 +39,10 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 		}
 	}
 
+	/// <summary>
+	/// refresh the list of players that are online and
+	/// th elist of players that are ready to rematch
+	/// </summary>
 	private void RefreshPlayerLists()
 	{
 		int readyPlayers = 0;
@@ -53,11 +56,14 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 			{
 				Photon.Realtime.Player player = PhotonNetwork.PlayerList[i];
 				bool ready = false;
+
+				// check whether the player is ready to rematch
 				if (player.CustomProperties.ContainsKey(readyToRematchKey))
 				{
 					ready = (bool)player.CustomProperties[readyToRematchKey];
 					if (ready)
 					{
+						// player is ready to rematch, add their nickname to the list of ready players
 						readyGO.SetActive(true);
 						readyGO.GetComponent<TMP_Text>().text = player.NickName;
 						++readyPlayers;
@@ -65,18 +71,19 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 				}
 				if (!ready)
 				{
+					// the player is online but not ready to rematch, add their name to the list of online players
 					onlineGO.SetActive(true);
 					onlineGO.GetComponent<TMP_Text>().text = player.NickName;
 				}
 			}
 
 		}
-		startButton.interactable = readyPlayers > 1;
+		startButton.interactable = readyPlayers > 1; // restarting requires at least two players
 	}
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
 	{
-		if(changedProps.ContainsKey(readyToRematchKey))
+		if(changedProps.ContainsKey(readyToRematchKey)) // the ready to rematch status has changed
 		{
 			RefreshPlayerLists();
 		}
@@ -89,6 +96,7 @@ public class RematchScreen : MonoBehaviourPunCallbacks
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
+		// activate the start game button for the new master client
 		startButton.gameObject.SetActive(PhotonNetwork.LocalPlayer.IsMasterClient);
 	}
 }

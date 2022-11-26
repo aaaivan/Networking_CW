@@ -9,7 +9,7 @@ using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
-public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
+public class PlayerMechanics : MonoBehaviour, Destructible, IPunObservable
 {
 	[Header("Health and Lives")]
 	[SerializeField]
@@ -61,6 +61,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 		playerColliders = GetComponents<Collider>();
 		RespownPosition = transform.position;
 
+		// each local player should restore their own health
 		if(!IsRemotePlayer)
 		{
 			RestoreHealth();
@@ -81,14 +82,14 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 
 	private void TriggerDeathEvents()
 	{
-		if (deathCount < lives && OnPlayerKilled != null)
+		if (deathCount < lives && OnPlayerKilled != null) // the player has been killed but it still has spare lives
 		{
 			if (OnPlayerKilled != null)
 			{
 				OnPlayerKilled.Invoke(this);
 			}
 		}
-		else if (deathCount >= lives && OnPlayerKilled != null)
+		else if (deathCount >= lives && OnPlayerKilled != null) // the player has run out of lives
 		{
 			if (OnPlayerDead != null)
 			{
@@ -99,7 +100,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 			{
 				gameObject.SetActive(false);
 			}
-			else
+			else // if the object is AI controlled, destroy it
 			{
 				Destroy(gameObject);
 			}
@@ -120,8 +121,12 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 		currentHealth = health;
 	}
 
+	/// <summary>
+	/// Shoot a projectile. The fuction spawns the projectile, applies an impulse and plays a sound
+	/// </summary>
 	public void Shoot()
 	{
+		// create projectile
 		GameObject projectile = Instantiate(projectilePrefab, spawnPosition.position, spawnPosition.rotation);
 
 		// Prevent the projectile to collide with th eplayer who shot it
@@ -157,6 +162,7 @@ public class PlayerMechanics : MonoBehaviour, Destructable, IPunObservable
 			int newDeathCount = (int)stream.ReceiveNext();
 			if(newDeathCount > deathCount)
 			{
+				// death count has increased: trigger the appropriate event
 				deathCount = newDeathCount;
 				TriggerDeathEvents();
 			}

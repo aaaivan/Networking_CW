@@ -32,6 +32,11 @@ public class AudioManager : MonoBehaviour
 		}
 	}
 	
+	/// <summary>
+	/// Play the specified sound at the specified location
+	/// </summary>
+	/// <param name="name"> name of the sound </param>
+	/// <param name="location"> location in world coordinates </param>
 	public void Play3dSound(string name, Vector3 location)
 	{
 		SoundEffect sound = sounds.Find(s => s.name == name);

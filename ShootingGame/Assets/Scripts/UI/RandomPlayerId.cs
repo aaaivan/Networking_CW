@@ -11,9 +11,9 @@ public class RandomPlayerId : MonoBehaviour
 		playerId = GetComponent<TMP_InputField>();
 	}
 
-	// Start is called before the first frame update
 	void Start()
     {
+		// assign a random id to the player
 		playerId.text = string.Format("Player {0}", Random.Range(1, 1000000));
     }
 }

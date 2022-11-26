@@ -10,7 +10,7 @@ public class AIEnemyController : MonoBehaviour
 	[SerializeField]
 	float playerDetectionDistance = 10;
 	[SerializeField]
-	float ShootingTimeout = 0.5f;
+	float ShootingTimeout = 1.0f;
 
 	private PlayerMechanics mechanics = null;
 	private Animator animator = null;
@@ -48,6 +48,7 @@ public class AIEnemyController : MonoBehaviour
 			foreach (var p in players)
 			{
 				Vector3 relPosition = p.transform.position - transform.position;
+				// is the player is closer than the detection treshhold start chasing
 				if (relPosition.magnitude < playerDetectionDistance)
 				{
 					chasedPlayer = p;
@@ -60,6 +61,7 @@ public class AIEnemyController : MonoBehaviour
 		else
 		{
 			Vector3 relPosition = chasedPlayer.transform.position - transform.position;
+			// if the chased player is further than the detection distance, stop chasing
 			if (relPosition.magnitude > playerDetectionDistance)
 			{
 				chasedPlayer = null;
@@ -80,16 +82,22 @@ public class AIEnemyController : MonoBehaviour
 
 	IEnumerator ChaseCoroutine()
 	{
+		// wait 2 seconds before chasing
 		yield return new WaitForSeconds(2);
 		canShoot = true;
 		while (chasedPlayer != null)
 		{
 			Chase();
+			// recalculate the path every 2 seconds
 			yield return new WaitForSeconds(2);
 		}
 		yield return null;
 	}
 
+	/// <summary>
+	/// set the new destination for the enemy navmesh.
+	/// the target destination is right in front of the player character
+	/// </summary>
 	private void Chase()
 	{
 		Vector3 chaseDir = chasedPlayer.transform.position - transform.position;

@@ -125,10 +125,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		Debug.Log("Room joined successfully!");
 		MenuNavigationManager.Instance.ShowMenu(5);
-		if (startGameBtn != null)
+		if (startGameBtn != null) // only the master client can start the game
 			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 
-		if (PhotonNetwork.PlayerList.Length > 1)
+		if (PhotonNetwork.PlayerList.Length > 1) // only allow to start the game if there are at least two players
 			startGameBtn.interactable = true;
 		else
 			startGameBtn.interactable = false;
@@ -136,10 +136,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
-		if (startGameBtn != null)
+		if (startGameBtn != null) // only the master client can start the game
 			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 
-		if (PhotonNetwork.PlayerList.Length > 1)
+		if (PhotonNetwork.PlayerList.Length > 1) // only allow to start the game if there are at least two players
 			startGameBtn.interactable = true;
 		else
 			startGameBtn.interactable = false;
@@ -176,9 +176,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 			OnPlayersChanged.Invoke();
 		}
 
+		// hide the room if full
 		PhotonNetwork.CurrentRoom.IsVisible = PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers;
 
-		if (PhotonNetwork.PlayerList.Length > 1)
+		if (PhotonNetwork.PlayerList.Length > 1) // only allow to start the game if there are at least two players
 			startGameBtn.interactable = true;
 		else
 			startGameBtn.interactable = false;
@@ -191,9 +192,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 			OnPlayersChanged.Invoke();
 		}
 
+		// show the room if not full
 		PhotonNetwork.CurrentRoom.IsVisible = PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers;
 
-		if (PhotonNetwork.PlayerList.Length > 1)
+		if (PhotonNetwork.PlayerList.Length > 1) // only allow to start the game if there are at least two players
 			startGameBtn.interactable = true;
 		else
 			startGameBtn.interactable = false;
@@ -256,6 +258,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		}
 	}
 
+	/// <summary>
+	/// Get the list of cached rooms
+	/// </summary>
+	/// <param name="rooms"> list to which cached rooms are added</param>
 	public void RoomsGet(out Dictionary<string, RoomInfo> rooms)
 	{
 		rooms = cachedRoomList;

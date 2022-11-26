@@ -18,7 +18,7 @@ public class PlayerSpawnManager : MonoBehaviour
 
 	void Start()
     {
-		int index = -1;
+		int index = -1; // index of the local player in the PhotonNetwork.PlayerList
 		for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
 		{
 			if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
@@ -30,9 +30,13 @@ public class PlayerSpawnManager : MonoBehaviour
 		if (index == -1)
 			return;
 
+		// since each player has a different index, this ensures no player spawns in the same location
 		Transform spawnTransf = spawnLocations[index % spawnLocations.Count];
+		// instantiate networked player character
 		GameObject player = PhotonNetwork.Instantiate(playerPrefab.name, spawnTransf.position, spawnTransf.rotation);
+		// have the camera following the local player's character
 		followPlayerCam.Follow = player.transform.Find("PlayerCameraRoot");
+		// register the ThirdPersonController with the InputsManger so that it can be enabled/disabled
 		InputsManager.Instance.thirdPersonController = player.GetComponent<ThirdPersonController>();
 	}
 }

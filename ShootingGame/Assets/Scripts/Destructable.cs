@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface Destructable
+public interface Destructible
 {
 	public int Health { get; }
 	public void DoDestroy(PlayerMechanics causedBy = null);

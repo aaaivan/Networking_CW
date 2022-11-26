@@ -36,6 +36,11 @@ public class MenuNavigationManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
+
+	/// <summary>
+	/// Show th emenu with the specified id and hide th eothers
+	/// </summary>
+	/// <param name="id">id of the menu to show</param>
 	public void ShowMenu(int id)
 	{
 		for(int i = 0; i < menus.Length; i++)
