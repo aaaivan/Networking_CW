@@ -94,6 +94,9 @@ public class SinglePlayerLevelManager : MonoBehaviour
 	/// <param name="hasWon"> has the local player won? </param>
 	private void EndGame(bool hasWon)
 	{
+		if (!isPlaying)
+			return;
+
 		InputsManager.Instance.DisableThirdPersonInputs();
 		isPlaying = false;
 		hud.ShowEndGame(hasWon);

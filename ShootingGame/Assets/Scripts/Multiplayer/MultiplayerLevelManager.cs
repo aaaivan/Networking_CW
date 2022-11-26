@@ -150,6 +150,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	{
 		if (!playing)
 			return;
+
 		playing = false;
 
 		gameOverScreen.SetWinners(winners);
