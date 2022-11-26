@@ -176,6 +176,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 			OnPlayersChanged.Invoke();
 		}
 
+		PhotonNetwork.CurrentRoom.IsVisible = PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers;
+
 		if (PhotonNetwork.PlayerList.Length > 1)
 			startGameBtn.interactable = true;
 		else
@@ -188,6 +190,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		{
 			OnPlayersChanged.Invoke();
 		}
+
+		PhotonNetwork.CurrentRoom.IsVisible = PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers;
 
 		if (PhotonNetwork.PlayerList.Length > 1)
 			startGameBtn.interactable = true;
@@ -232,7 +236,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 		foreach (RoomInfo room in roomList)
 		{
-			if (!room.IsOpen || !room.IsVisible || room.RemovedFromList || room.PlayerCount == room.MaxPlayers)
+			if (!room.IsOpen || !room.IsVisible || room.RemovedFromList)
 			{
 				if (cachedRoomList.ContainsKey(room.Name))
 				{
