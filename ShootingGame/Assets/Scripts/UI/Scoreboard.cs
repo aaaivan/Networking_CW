@@ -105,7 +105,7 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 		players.Sort((a, b) => PlayerEntriesCompare(a, b));
 
 		int maxScore = players[0].GetScore(); // score of the winning player
-		int minDeaths = MultiplayerLevelManager.Instance.playersMap[players[0]].Deaths; // death count of the winning player
+		int minDeaths = MultiplayerLevelManager.Instance.playersMap[players[0]].DeathCount; // death count of the winning player
 
 		for (int i = 0; i < scoreList.Count; ++i)
 		{
@@ -114,7 +114,7 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 				// update player stats
 				scoreList[i].SetActive(true);
 				Player p = players[i];
-				int deaths = MultiplayerLevelManager.Instance.playersMap[p].Deaths;
+				int deaths = MultiplayerLevelManager.Instance.playersMap[p].DeathCount;
 				TMP_Text playerName = scoreList[i].transform.GetChild(0).GetComponent<TMP_Text>();
 				TMP_Text playerScore = scoreList[i].transform.GetChild(1).GetComponent<TMP_Text>();
 				playerName.text = p.NickName;
@@ -161,11 +161,11 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 		}
 		else
 		{
-			if (p_a.Deaths < p_b.Deaths)
+			if (p_a.DeathCount < p_b.DeathCount)
 			{
 				return -1;
 			}
-			else if (p_a.Deaths > p_b.Deaths)
+			else if (p_a.DeathCount > p_b.DeathCount)
 			{
 				return 1;
 			}

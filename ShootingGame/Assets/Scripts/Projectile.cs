@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class ProjectileManager : MonoBehaviour, Destructible
+public class Projectile : MonoBehaviour, IDestructible
 {
 	[SerializeField]
 	int damage = 1;
 	[SerializeField]
-	int health = 1;
-	public int Health { get { return health; } }
-	public Vector3 RespownPosition { get { return Vector3.zero; } set { ; } }
+	int currentHealth = 2;
+	public int CurrentHealth { get { return currentHealth; } }
 	bool isColliding = false;
 
 	public PlayerMechanics shotBy { get; set; }
@@ -19,18 +18,18 @@ public class ProjectileManager : MonoBehaviour, Destructible
 
 	public void DoDestroy(PlayerMechanics causedBy = null)
 	{
-		health = 0;
+		currentHealth = 0;
 		Destroy(gameObject);
 		AudioManager.Instance.Play3dSound("ProjectileDestruction", gameObject.transform.position);
 	}
 
 	public void DoDamage(int damage, PlayerMechanics causedBy = null)
 	{
-		if (health <= 0)
+		if (currentHealth <= 0)
 			return;
 
-		health -= damage;
-		if (health <= 0)
+		currentHealth -= damage;
+		if (currentHealth <= 0)
 		{
 			DoDestroy();
 		}
@@ -54,7 +53,7 @@ public class ProjectileManager : MonoBehaviour, Destructible
 
 		isColliding = false;
 
-		Destructible gameObj = collision.gameObject.GetComponent<Destructible>();
+		IDestructible gameObj = collision.gameObject.GetComponent<IDestructible>();
 		if (gameObj != null)
         {
 			// the hit object is of the Distructible type
@@ -65,9 +64,9 @@ public class ProjectileManager : MonoBehaviour, Destructible
 			{
 				gameObj.DoDamage(damage, shotBy);
 			}
-			DoDamage(health);
+			DoDamage(currentHealth);
         }
-		else if(health > 0)
+		else if(currentHealth > 0)
 		{
 			DoDamage(1);
 		}

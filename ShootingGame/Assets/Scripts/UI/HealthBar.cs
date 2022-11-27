@@ -23,7 +23,7 @@ public class HealthBar : MonoBehaviour
 		transform.LookAt(transform.position + cam.transform.forward);
 
 		// check if the health of the player has changed. If yes, update the health bar.
-		float newFill = (float)playerMechanics.CurrentHealth / playerMechanics.Health;
+		float newFill = (float)playerMechanics.CurrentHealth / playerMechanics.FullHealth;
 		if(newFill != fillAmount)
 		{
 			SetFillAmount(newFill);

@@ -38,7 +38,7 @@ public class MenuNavigationManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Show th emenu with the specified id and hide th eothers
+	/// Show the menu with the specified id and hide th eothers
 	/// </summary>
 	/// <param name="id">id of the menu to show</param>
 	public void ShowMenu(int id)
@@ -47,5 +47,13 @@ public class MenuNavigationManager : MonoBehaviour
 		{
 			menus[i].SetActive(i == id);
 		}
+	}
+
+	public GameObject MenuGet(int index)
+	{
+		if(index < 0 || index >= menus.Length)
+			return null;
+
+		return menus[index];
 	}
 }

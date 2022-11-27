@@ -13,14 +13,10 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	[SerializeField]
 	int maxKills = 3; // num of kills to win the game
 	[SerializeField]
-	MultiplayerGameOver gameOverScreen = null;
-	[SerializeField]
-	Scoreboard scoreboard = null;
-	[SerializeField]
 	float gameDuration = 120.0f; // in seconds
 	float startTime = 0;
-	bool playing = false;
 	public float TimeLeft { get { return startTime + gameDuration - Time.time; } }
+	bool playing = false;
 
 	PhotonView phView;
 
@@ -65,6 +61,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		if (!playersMap.ContainsKey(photonPlayer))
 		{
 			playersMap.Add(photonPlayer, gameObjPlayer);
+			Scoreboard scoreboard = MenuNavigationManager.Instance.MenuGet(0).GetComponent<Scoreboard>();
 			scoreboard.UpdateScoreboard(gameObjPlayer);
 		}
 	}
@@ -117,7 +114,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		{
 			if (player.GetScore() > maxScore)
 			{
-				minDeaths = playersMap[player].Deaths;
+				minDeaths = playersMap[player].DeathCount;
 				maxScore = player.GetScore();
 
 				winners.Clear();
@@ -125,7 +122,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			}
 			else if (player.GetScore() == maxScore)
 			{
-				int deaths = playersMap[player].Deaths;
+				int deaths = playersMap[player].DeathCount;
 				if (deaths < minDeaths)
 				{
 					minDeaths = deaths;
@@ -153,6 +150,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 		playing = false;
 
+		MultiplayerGameOver gameOverScreen = MenuNavigationManager.Instance.MenuGet(1).GetComponent<MultiplayerGameOver>();
 		gameOverScreen.SetWinners(winners);
 		MenuNavigationManager.Instance.ShowMenu(1);
 

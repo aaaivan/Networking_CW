@@ -13492,4 +13492,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  health: 2
+  currentHealth: 2

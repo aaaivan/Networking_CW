@@ -6,7 +6,7 @@ public class Lava : MonoBehaviour
 {
 	private void OnCollisionEnter(Collision collision)
 	{
-		Destructible gameObj = collision.gameObject.GetComponent<Destructible>();
+		IDestructible gameObj = collision.gameObject.GetComponent<IDestructible>();
 		if (gameObj != null)
 		{
 			// the object is of type Destructible

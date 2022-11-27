@@ -1427,9 +1427,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lives: 1
-  health: 3
+  fullHealth: 3
   projectilePrefab: {fileID: 2557817864867074807, guid: 1abf5530c7f9cfa4d9c0b02d4f163f42, type: 3}
-  spawnPosition: {fileID: 7254636295500782750}
+  projectileSpawnPosition: {fileID: 7254636295500782750}
   fireAngle: 5
   firePower: 30
 --- !u!114 &7254636295333897024

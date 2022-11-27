@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface Destructible
+public interface IDestructible
 {
-	public int Health { get; }
+	public int CurrentHealth { get; }
 	public void DoDestroy(PlayerMechanics causedBy = null);
 	public void DoDamage(int damage, PlayerMechanics causedBy = null);
-	public Vector3 RespownPosition { get; set; }
 }

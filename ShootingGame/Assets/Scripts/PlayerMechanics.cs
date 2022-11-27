@@ -1,35 +1,32 @@
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
-using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
-public class PlayerMechanics : MonoBehaviour, Destructible, IPunObservable
+public class PlayerMechanics : MonoBehaviour, IDestructible, IPunObservable
 {
 	[Header("Health and Lives")]
 	[SerializeField]
 	int lives = 3;
 	int deathCount = 0;
 	[SerializeField]
-	int health = 3;
+	int fullHealth = 3;
 	int currentHealth = 0;
 
-	public int Health { get { return health; } }
+	public int FullHealth { get { return fullHealth; } }
 	public int CurrentHealth { get { return currentHealth; } }
 	public int LivesLeft { get { return lives - deathCount; } }
-	public int Deaths { get { return deathCount; } }
+	public int DeathCount { get { return deathCount; } }
 	Vector3 respownTransform = Vector3.zero;
 	public Vector3 RespownPosition { get { return respownTransform; } set { respownTransform = value; } }
 
 	[Header("Shooting")]
 	[SerializeField] GameObject projectilePrefab = null;
 	Collider[] playerColliders;
-	[SerializeField] Transform spawnPosition = null;
+	[SerializeField] Transform projectileSpawnPosition = null;
 	[SerializeField] float fireAngle = 45;
 	[SerializeField] float firePower = 2;
 
@@ -39,13 +36,13 @@ public class PlayerMechanics : MonoBehaviour, Destructible, IPunObservable
 	public bool IsLocalPlayer { get { return isLocalPlayer; } }
 	public bool IsRemotePlayer { get { return isHuman && !isLocalPlayer; } }
 
-	Photon.Realtime.Player owner = null;
+	Player owner = null;
 
-	public delegate void PlayerKilled(PlayerMechanics p);
-	public static event PlayerKilled OnPlayerKilled;
+	public delegate void PlayerKilledHandler(PlayerMechanics p);
+	public static event PlayerKilledHandler OnPlayerKilled;
 
-	public delegate void PlayerDead(PlayerMechanics p);
-	public static event PlayerDead OnPlayerDead;
+	public delegate void PlayerDeadHandler(PlayerMechanics p);
+	public static event PlayerDeadHandler OnPlayerDead;
 
 	private void Awake()
 	{
@@ -118,7 +115,7 @@ public class PlayerMechanics : MonoBehaviour, Destructible, IPunObservable
 
 	public void RestoreHealth()
 	{
-		currentHealth = health;
+		currentHealth = fullHealth;
 	}
 
 	/// <summary>
@@ -127,7 +124,7 @@ public class PlayerMechanics : MonoBehaviour, Destructible, IPunObservable
 	public void Shoot()
 	{
 		// create projectile
-		GameObject projectile = Instantiate(projectilePrefab, spawnPosition.position, spawnPosition.rotation);
+		GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPosition.position, projectileSpawnPosition.rotation);
 
 		// Prevent the projectile to collide with th eplayer who shot it
 		Collider projectileCollider = projectile.GetComponent<Collider>();
@@ -138,8 +135,8 @@ public class PlayerMechanics : MonoBehaviour, Destructible, IPunObservable
 		Rigidbody rigidBody = projectile.GetComponent<Rigidbody>();
 
 		// Set owner of the projectile
-		ProjectileManager projecitleManager = projectile.GetComponent<ProjectileManager>();
-		projecitleManager.shotBy = this;
+		Projectile projecitleComponent = projectile.GetComponent<Projectile>();
+		projecitleComponent.shotBy = this;
 
 		// Apply impulse to the projectile
 		Vector3 forceDirection = transform.forward * Mathf.Cos(Mathf.Deg2Rad * fireAngle) + transform.up * Mathf.Sin(Mathf.Deg2Rad * fireAngle);
