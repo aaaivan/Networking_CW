@@ -1764,7 +1764,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1601055267}
   m_HandleRect: {fileID: 1601055266}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4254,7 +4254,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1738843975}
   m_HandleRect: {fileID: 1738843974}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5642,7 +5642,7 @@ RectTransform:
   m_Father: {fileID: 1382912505}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.00000011920929, y: 0}
+  m_AnchorMin: {x: 0.000000059604645, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -27091,8 +27091,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1487636619}
   m_HandleRect: {fileID: 1487636618}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.9999999
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -34426,7 +34426,7 @@ RectTransform:
   m_Father: {fileID: 1991941792}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.00000011920929, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -52265,7 +52265,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 280072741}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.9999999
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -57740,8 +57740,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxKills: 3
-  gameOverScreen: {fileID: 807333263}
-  scoreboard: {fileID: 145187042}
   gameDuration: 90
 --- !u!114 &2136020379
 MonoBehaviour:

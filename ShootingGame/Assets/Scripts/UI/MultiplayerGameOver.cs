@@ -29,6 +29,9 @@ public class MultiplayerGameOver : MonoBehaviour
 			}
 		}
 
+		if (winnerList.Count == 0)
+			return;
+
 		// build the winners message
 		string winnersList = "";
 		for (int i = 0; i < winnerList.Count - 1; i++)

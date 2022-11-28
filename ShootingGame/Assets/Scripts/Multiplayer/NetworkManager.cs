@@ -14,6 +14,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	TMP_Text roomNameTakenWarning;
 	[SerializeField]
 	Button joinRandomRoomBtn;
+	[SerializeField]
+	Button listRoomsBtn;
 
 	string playerId;
 	public string PlayerId
@@ -105,7 +107,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	}
 	public override void OnCreateRoomFailed(short returnCode, string message)
 	{
-		base.OnCreateRoomFailed(returnCode, message);
 		Debug.Log("Failed to create room (" + returnCode + ").");
 		roomNameTakenWarning.gameObject.SetActive(true);
 		JoinLobby();
@@ -215,6 +216,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		Debug.Log("Lobby joined"!);
 		joinRandomRoomBtn.interactable = cachedRoomList.Count > 0;
+		listRoomsBtn.interactable = cachedRoomList.Count > 0;
 	}
 
 	public void LeaveLobby()
@@ -226,7 +228,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		Debug.Log("Lobby left!");
 		cachedRoomList.Clear();
-		if(disconnectOnLeaveLobby)
+		listRoomsBtn.interactable = false;
+
+		if (disconnectOnLeaveLobby)
 			DisconnectFromMaster();
 
 		disconnectOnLeaveLobby = false;
@@ -252,6 +256,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		}
 
 		joinRandomRoomBtn.interactable = cachedRoomList.Count > 0;
+		listRoomsBtn.interactable = cachedRoomList.Count > 0;
 		if (OnRoomsChanged != null)
 		{
 			OnRoomsChanged.Invoke();

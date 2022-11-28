@@ -44,6 +44,11 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			startTime = Time.time;
 			playing = true;
 			phView = GetComponent<PhotonView>();
+
+			ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();
+			hash[RematchScreen.readyToRematchKey] = false;
+			hash[PunPlayerScores.PlayerScoreProp] = 0;
+			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 		}
 		else
 		{
@@ -171,19 +176,21 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	public override void OnDisconnected(DisconnectCause cause)
 	{
-		if(cause == DisconnectCause.DisconnectByClientLogic)
+		playing = false;
+		if (cause == DisconnectCause.DisconnectByClientLogic)
 		{
-			SceneTransitionManager.Instance.LoadScene("Main");
+			SceneManager.LoadScene("Main");
 		}
 		else // if we disconnected because of a network issue, show the disconnection message
 		{
 			MenuNavigationManager.Instance.ShowMenu(2);
+			InputsManager.Instance.DisableThirdPersonInputs();
 		}
 	}
 
 	public void QuitGameOffline()
 	{
-		SceneTransitionManager.Instance.LoadScene("Main");
+		SceneManager.LoadScene("Main");
 	}
 
 	public void StartRematch()
@@ -200,9 +207,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(RematchScreen.readyToRematchKey))
 		{
 			ready = (bool)PhotonNetwork.LocalPlayer.CustomProperties[RematchScreen.readyToRematchKey];
-			ExitGames.Client.Photon.Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
-			hash[RematchScreen.readyToRematchKey] = false;
-			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 		}
 		if (ready) // if player is ready to rematch, reload the multiplayer level
 		{

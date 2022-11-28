@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SinglePlayerMenuButton : MonoBehaviour
 {
 	public void Restart()
 	{
-		SceneTransitionManager.Instance.LoadScene("SinglePlayer");
+		SceneManager.LoadScene("SinglePlayer");
 	}
 	public void MainMenu()
 	{
-		SceneTransitionManager.Instance.LoadScene("Main");
+		SceneManager.LoadScene("Main");
 	}
-
 }
