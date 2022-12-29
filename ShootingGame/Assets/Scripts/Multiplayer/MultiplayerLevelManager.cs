@@ -2,6 +2,7 @@ using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using StarterAssets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -101,6 +102,23 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			List<string> winners;
 			ComputeWinners(out winners); 
 			EndGame(winners);
+			StorePersonalBest();
+		}
+	}
+
+	void StorePersonalBest()
+	{
+		int score = PhotonNetwork.LocalPlayer.GetScore();
+		PlayerData playerData = GameManager.Instance.PlayerData;
+		if(score > playerData.bestScore)
+		{
+			playerData.username = PhotonNetwork.LocalPlayer.NickName;
+			playerData.bestScore = score;
+			playerData.bestScoreDate = DateTime.UtcNow.ToString();
+			playerData.playersInGame = PhotonNetwork.PlayerList.Length;
+			playerData.roomName = PhotonNetwork.CurrentRoom.Name;
+
+			GameManager.Instance.SavePlayerData();
 		}
 	}
 
