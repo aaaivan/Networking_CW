@@ -39,7 +39,9 @@ public class GameManager : MonoBehaviour
 	public void SavePlayerData()
 	{
 		string serializedData = JSON.Serialize(playerData).CreateString();
-		File.WriteAllText(filePath, serializedData);
+		var dataBytes = System.Text.Encoding.UTF8.GetBytes(serializedData);
+		string encodedData = System.Convert.ToBase64String(dataBytes);
+		File.WriteAllText(filePath, encodedData);
 	}
 
 	public void LoadPlayerData()
@@ -49,7 +51,9 @@ public class GameManager : MonoBehaviour
 			playerData = new PlayerData();
 			SavePlayerData();
 		}
-		string serializedData = File.ReadAllText(filePath);
+		string encodedData = File.ReadAllText(filePath);
+		var dataBytes = System.Convert.FromBase64String(encodedData);
+		string serializedData = System.Text.Encoding.UTF8.GetString(dataBytes);
 		playerData = JSON.ParseString(serializedData).Deserialize<PlayerData>();
 	}
 }
