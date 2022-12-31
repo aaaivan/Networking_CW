@@ -10,6 +10,11 @@ public class GameManager : MonoBehaviour
 	public PlayerData PlayerData { get { return playerData; } }
 
 	[SerializeField]
+	string encryptionKey32;
+	[SerializeField]
+	string initializationVector16;
+	[SerializeField]
+	string fileName;
 	string filePath;
 
 	static GameManager instance;
@@ -26,6 +31,7 @@ public class GameManager : MonoBehaviour
 		if(instance == null)
 		{
 			instance = this;
+			filePath = Application.persistentDataPath + "/" + fileName;
 			DontDestroyOnLoad(gameObject);
 
 			LoadPlayerData();
@@ -39,9 +45,9 @@ public class GameManager : MonoBehaviour
 	public void SavePlayerData()
 	{
 		string serializedData = JSON.Serialize(playerData).CreateString();
-		var dataBytes = System.Text.Encoding.UTF8.GetBytes(serializedData);
-		string encodedData = System.Convert.ToBase64String(dataBytes);
-		File.WriteAllText(filePath, encodedData);
+		string encodedData = EncodeToBase64(serializedData);
+		byte[] encryptedData = AesEncryption.Encrypt(encodedData, encryptionKey32, initializationVector16);
+		File.WriteAllBytes(filePath, encryptedData);
 	}
 
 	public void LoadPlayerData()
@@ -51,9 +57,21 @@ public class GameManager : MonoBehaviour
 			playerData = new PlayerData();
 			SavePlayerData();
 		}
-		string encodedData = File.ReadAllText(filePath);
-		var dataBytes = System.Convert.FromBase64String(encodedData);
-		string serializedData = System.Text.Encoding.UTF8.GetString(dataBytes);
+		byte[] encryptedData = File.ReadAllBytes(filePath);
+		string encodedData = AesEncryption.Decrypt(encryptedData, encryptionKey32, initializationVector16);
+		string serializedData = DecodeFromBase64(encodedData);
 		playerData = JSON.ParseString(serializedData).Deserialize<PlayerData>();
+	}
+
+	string EncodeToBase64(string original)
+	{
+		var dataBytes = System.Text.Encoding.UTF8.GetBytes(original);
+		return System.Convert.ToBase64String(dataBytes);
+	}
+
+	string DecodeFromBase64(string base64string)
+	{
+		var dataBytes = System.Convert.FromBase64String(base64string);
+		return System.Text.Encoding.UTF8.GetString(dataBytes);
 	}
 }

@@ -21164,7 +21164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f8a1bf6f9a2a2b44a2cd8729c909356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  filePath: PlayerData.txt
+  encryptionKey32: c8%C]8bZ^,3Q5?'`Tf<:(/e'*+1x=yYe
+  initializationVector16: ',\bJ9h%HaQ3<";R3'
+  fileName: PlayerSave.dat
 --- !u!4 &549254464
 Transform:
   m_ObjectHideFlags: 0
