@@ -405,14 +405,44 @@ namespace StarterAssets
 
 		public void DisableGameInputs()
 		{
+			if (!AreInputsEnabled())
+				return;
+
+			StarterAssetsInputs starterAssetsInput = gameObject.GetComponent<StarterAssetsInputs>();
+			if (UnityEngine.Input.mousePresent)
+			{
+				Cursor.visible = true;
+				Cursor.lockState = CursorLockMode.None;
+				starterAssetsInput.cursorLocked = false;
+				starterAssetsInput.cursorInputForLook = false;
+			}
+
 			PlayerInput input = GetComponent<PlayerInput>();
 			input.actions.Disable();
 		}
 
 		public void EnableGameInputs()
 		{
+			if (AreInputsEnabled())
+				return;
+
+			StarterAssetsInputs starterAssetsInput = gameObject.GetComponent<StarterAssetsInputs>();
+			if (UnityEngine.Input.mousePresent)
+			{
+				Cursor.visible = false;
+				Cursor.lockState = CursorLockMode.Locked;
+				starterAssetsInput.cursorLocked = true;
+				starterAssetsInput.cursorInputForLook = true;
+			}
+
 			PlayerInput input = GetComponent<PlayerInput>();
 			input.actions.Enable();
+		}
+
+		public bool AreInputsEnabled()
+		{
+			PlayerInput input = GetComponent<PlayerInput>();
+			return input.actions.enabled;
 		}
 	}
 }

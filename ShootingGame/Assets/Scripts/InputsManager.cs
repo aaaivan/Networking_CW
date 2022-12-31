@@ -5,6 +5,7 @@ using StarterAssets;
 
 public class InputsManager : MonoBehaviour
 {
+	[HideInInspector]
 	public ThirdPersonController thirdPersonController;
 
 	static InputsManager instance;
@@ -38,31 +39,22 @@ public class InputsManager : MonoBehaviour
 
 	public void DisableThirdPersonInputs()
 	{
-		ThirdPersonController fpc = InputsManager.Instance.thirdPersonController;
-		GameObject player = fpc.gameObject;
-		StarterAssetsInputs inputs = player.GetComponent<StarterAssetsInputs>();
-		if (Input.mousePresent)
-		{
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
-			inputs.cursorLocked = false;
-			inputs.cursorInputForLook = false;
-		}
-		fpc.DisableGameInputs();
+		ThirdPersonController tpc = thirdPersonController;
+		tpc.DisableGameInputs();
 	}
 
 	public void EnableThirdPersonInputs()
 	{
-		ThirdPersonController fpc = InputsManager.Instance.thirdPersonController;
-		GameObject player = fpc.gameObject;
-		StarterAssetsInputs inputs = player.GetComponent<StarterAssetsInputs>();
-		if (Input.mousePresent)
-		{
-			Cursor.visible = false;
-			Cursor.lockState = CursorLockMode.Locked;
-			inputs.cursorLocked = true;
-			inputs.cursorInputForLook = true;
-		}
-		fpc.EnableGameInputs();
+		ThirdPersonController tpc = thirdPersonController;
+		tpc.EnableGameInputs();
+	}
+
+	public void ToggleThirdPersonInputs()
+	{
+		ThirdPersonController tpc = thirdPersonController;
+		if(tpc.AreInputsEnabled())
+			DisableThirdPersonInputs();
+		else
+			EnableThirdPersonInputs();
 	}
 }

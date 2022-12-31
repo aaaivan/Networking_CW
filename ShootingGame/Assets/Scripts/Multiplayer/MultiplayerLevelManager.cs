@@ -18,6 +18,10 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	float startTime = 0;
 	public float TimeLeft { get { return startTime + gameDuration - Time.time; } }
 	bool playing = false;
+	public bool Playing { get { return playing; } }
+
+	[SerializeField]
+	OnlineChatManager chat;
 
 	PhotonView phView;
 
@@ -50,6 +54,10 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			hash[RematchScreen.readyToRematchKey] = false;
 			hash[PunPlayerScores.PlayerScoreProp] = 0;
 			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+
+			// Connect the local player to the online chat
+			var authenticationValues = new Photon.Chat.AuthenticationValues(PhotonNetwork.LocalPlayer.NickName);
+			chat.ChatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, "1.0", authenticationValues);
 		}
 		else
 		{
@@ -74,6 +82,11 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	private void Update()
 	{
+		if(Input.GetKeyUp(KeyCode.Escape) && playing)
+		{
+			InputsManager.Instance.ToggleThirdPersonInputs();
+		}
+
 		// check who won if the time runs out
 		if (playing && TimeLeft < 0)
 		{
@@ -203,6 +216,9 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		{
 			MenuNavigationManager.Instance.ShowMenu(2);
 			InputsManager.Instance.DisableThirdPersonInputs();
+
+			// Connect the local player to the online chat
+			chat.ChatClient.Disconnect();
 		}
 	}
 

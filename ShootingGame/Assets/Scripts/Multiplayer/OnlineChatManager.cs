@@ -6,6 +6,7 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class OnlineChatManager : MonoBehaviour, IChatClientListener
 {
@@ -32,7 +33,8 @@ public class OnlineChatManager : MonoBehaviour, IChatClientListener
 
 	private void OnEnable()
 	{
-		sendMessageButton.interactable = false;
+		bool activateChat = PhotonNetwork.CurrentRoom != null;
+		sendMessageButton.interactable = activateChat;
 		lastSender = string.Empty;
 	}
 
