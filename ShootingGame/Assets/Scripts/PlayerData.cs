@@ -1,14 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerData
 {
+	public string uid;
+
 	public string username;
 	public int bestScore;
 	public string bestScoreDate;
 	public int playersInGame;
 	public string roomName;
+
+	public PlayerData()
+	{
+		uid = Guid.NewGuid().ToString();
+	}
 
 	public int GetEntries()
 	{

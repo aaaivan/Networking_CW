@@ -21,7 +21,8 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	public bool Playing { get { return playing; } }
 
 	[SerializeField]
-	OnlineChatManager chat;
+	OnlineChatUI chat;
+	public OnlineChatUI Chat { get { return chat; } }
 
 	PhotonView phView;
 
@@ -54,10 +55,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			hash[RematchScreen.readyToRematchKey] = false;
 			hash[PunPlayerScores.PlayerScoreProp] = 0;
 			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-
-			// Connect the local player to the online chat
-			var authenticationValues = new Photon.Chat.AuthenticationValues(PhotonNetwork.LocalPlayer.NickName);
-			chat.ChatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, "1.0", authenticationValues);
 		}
 		else
 		{
@@ -131,6 +128,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			playerData.playersInGame = PhotonNetwork.PlayerList.Length;
 			playerData.roomName = PhotonNetwork.CurrentRoom.Name;
 
+			GlobalLeaderboard.Instance.SubmitScore(score);
 			GameManager.Instance.SavePlayerData();
 		}
 	}
@@ -208,6 +206,11 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 	public override void OnDisconnected(DisconnectCause cause)
 	{
 		playing = false;
+
+		// Disconnect the local player from the online chat
+		OnlineChatManager.Instance.ChatClient.Disconnect();
+		chat.gameObject.SetActive(false);
+
 		if (cause == DisconnectCause.DisconnectByClientLogic)
 		{
 			SceneManager.LoadScene("Main");
@@ -216,9 +219,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		{
 			MenuNavigationManager.Instance.ShowMenu(2);
 			InputsManager.Instance.DisableThirdPersonInputs();
-
-			// Connect the local player to the online chat
-			chat.ChatClient.Disconnect();
 		}
 	}
 

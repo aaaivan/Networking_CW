@@ -288,6 +288,50 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &3631864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3631866}
+  - component: {fileID: 3631865}
+  m_Layer: 0
+  m_Name: OnlineChatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &3631865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3631864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 414954f5dd21652499257653b995e577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &3631866
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3631864}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1999.181, y: 336.02612, z: 398.47778}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8339726
 GameObject:
   m_ObjectHideFlags: 0
@@ -6240,6 +6284,52 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &322604803
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 322604805}
+  - component: {fileID: 322604804}
+  m_Layer: 0
+  m_Name: LeaderBoardManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &322604804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322604803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a3791bed30365744843e8ab86573c85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxEntries: 5
+  statisticName: Most Kills
+--- !u!4 &322604805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322604803}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1998.9933, y: 333.92407, z: 108.213615}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &337601282
 Mesh:
   m_ObjectHideFlags: 0
@@ -28089,8 +28179,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.5}
-  m_SizeDelta: {x: -20, y: -13}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -20, y: -12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &862492938
 MonoBehaviour:
@@ -30319,8 +30409,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0.23887634, y: 63.18274}
-  m_SizeDelta: {x: -19.519989, y: 32}
+  m_AnchoredPosition: {x: 0.23887634, y: 65}
+  m_SizeDelta: {x: -19.519989, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1035096790
 MonoBehaviour:
@@ -32903,8 +32993,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1319033313}
-        m_TargetAssemblyTypeName: OnlineChatManager, Assembly-CSharp
-        m_MethodName: SendChatMessage
+        m_TargetAssemblyTypeName: OnlineChatUI, Assembly-CSharp
+        m_MethodName: OnSendButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -35316,14 +35406,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1319033308}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 414954f5dd21652499257653b995e577, type: 3}
+  m_Script: {fileID: 11500000, guid: fa145a125ec038a4f9037a9ddcacb154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chatMessagePrefab: {fileID: 943668598734459880, guid: 48b45aa0079cf4b4abfd4128ad93b287, type: 3}
+  userJoinedLeftPrefab: {fileID: 785024919277404321, guid: 83dfb2274125e8e44a2d25595b7c6281, type: 3}
   messageInputField: {fileID: 1035096790}
   chatContent: {fileID: 1638519623}
   sendMessageButton: {fileID: 1142512042}
-  chatMessagePrefab: {fileID: 943668598734459880, guid: 48b45aa0079cf4b4abfd4128ad93b287, type: 3}
-  userJoinedLeftPrefab: {fileID: 785024919277404321, guid: 83dfb2274125e8e44a2d25595b7c6281, type: 3}
 --- !u!1001 &1319852651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39074,8 +39164,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -39334,7 +39424,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 377978037}
   m_HandleRect: {fileID: 377978036}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -58153,7 +58243,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -59825,8 +59915,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Leguar.TotalJSON;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,14 +34,36 @@ public class GameManager : MonoBehaviour
 		{
 			instance = this;
 			filePath = Application.persistentDataPath + "/" + fileName;
+			Debug.Log(filePath);
 			DontDestroyOnLoad(gameObject);
 
 			LoadPlayerData();
+			LoginToPlayFab();
 		}
 		else
 		{
 			Destroy(gameObject);
 		}
+	}
+
+	void LoginToPlayFab()
+	{
+		LoginWithCustomIDRequest request = new LoginWithCustomIDRequest()
+		{
+			CreateAccount = true,
+			CustomId = playerData.uid,
+		};
+		PlayFabClientAPI.LoginWithCustomID(request, PlayFabLoginResult, PlayFabLoginError);
+	}
+
+	void PlayFabLoginResult(LoginResult loginResult)
+	{
+		Debug.Log("PlayFab - Login Succeeded: " + loginResult.ToJson());
+	}
+
+	void PlayFabLoginError(PlayFabError playFabError)
+	{
+		Debug.Log("PlayFab - Login Failed: " + playFabError.ErrorMessage);
 	}
 
 	public void SavePlayerData()

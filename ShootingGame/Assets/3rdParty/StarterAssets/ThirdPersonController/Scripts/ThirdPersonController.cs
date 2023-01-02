@@ -89,6 +89,7 @@ namespace StarterAssets
         private float _animationBlend;
         private float _verticalVelocity;
         private const float _terminalVelocity = 53.0f;
+		bool _ignoreInput = false;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -168,7 +169,7 @@ namespace StarterAssets
 
         private void Update()
         {
-			if (!_player.IsLocalPlayer)
+			if (!_player.IsLocalPlayer || _ignoreInput)
 				return;
 
 			_hasAnimator = TryGetComponent(out _animator);
@@ -181,7 +182,7 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-			if (!_player.IsLocalPlayer)
+			if (!_player.IsLocalPlayer || _ignoreInput)
 				return;
 
 			CameraRotation();
@@ -419,6 +420,10 @@ namespace StarterAssets
 
 			PlayerInput input = GetComponent<PlayerInput>();
 			input.actions.Disable();
+
+			_input.look = Vector2.zero;
+			_input.move = Vector2.zero;
+			_ignoreInput = true;
 		}
 
 		public void EnableGameInputs()
@@ -437,6 +442,8 @@ namespace StarterAssets
 
 			PlayerInput input = GetComponent<PlayerInput>();
 			input.actions.Enable();
+
+			_ignoreInput = false;
 		}
 
 		public bool AreInputsEnabled()

@@ -1,0 +1,86 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using PlayFab;
+using PlayFab.ClientModels;
+
+public class GlobalLeaderboard : MonoBehaviour
+{
+	[SerializeField]
+	int maxEntries = 5;
+	[SerializeField]
+	string statisticName = "Most Kills";
+
+	static GlobalLeaderboard instance;
+	public static GlobalLeaderboard Instance
+	{
+		get { return instance; }
+	}
+
+	private void OnDestroy()
+	{
+		if (instance == this)
+		{
+			instance = null;
+		}
+	}
+
+	private void Awake()
+	{
+		if (instance == null)
+		{
+			instance = this;
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+	}
+
+	public void SubmitScore(int playerScore)
+	{
+		UpdatePlayerStatisticsRequest request = new UpdatePlayerStatisticsRequest()
+		{
+			Statistics = new List<StatisticUpdate>
+			{
+				new StatisticUpdate()
+				{
+					StatisticName = statisticName,
+					Value = playerScore,
+				}
+			}
+		};
+
+		PlayFabClientAPI.UpdatePlayerStatistics(request, PlayFabUpdateStatsResult, PlayFabUpdateStatsError);
+	}
+
+	void PlayFabUpdateStatsResult(UpdatePlayerStatisticsResult result)
+	{
+		Debug.Log("PlayFab - Score Submitted");
+	}
+
+	void PlayFabUpdateStatsError(PlayFabError error)
+	{
+		Debug.Log("PlayFab Error: " + error);
+	}
+
+	public void GetLeaderboard()
+	{
+		GetLeaderboardRequest request = new GetLeaderboardRequest()
+		{
+			MaxResultsCount = maxEntries,
+			StatisticName = statisticName,
+		};
+		PlayFabClientAPI.GetLeaderboard(request, PlayFabGetLeaderboardResult, PlayFabGetLeaderboardError);
+	}
+
+	public void PlayFabGetLeaderboardResult(GetLeaderboardResult result)
+	{
+		Debug.Log("PlayFab - Leaderboard fetched succesfully");
+	}
+
+	public void PlayFabGetLeaderboardError(PlayFabError error)
+	{
+		Debug.Log("PlayFab Error: " + error);
+	}
+}

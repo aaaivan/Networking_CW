@@ -10,39 +10,36 @@ using System;
 
 public class OnlineChatManager : MonoBehaviour, IChatClientListener
 {
-	[SerializeField]
-	TMP_InputField messageInputField;
-	[SerializeField]
-	RectTransform chatContent;
-	[SerializeField]
-	Button sendMessageButton;
-	[SerializeField]
-	GameObject chatMessagePrefab;
-	[SerializeField]
-	GameObject userJoinedLeftPrefab;
-	string lastSender = string.Empty;
-
+	OnlineChatUI ChatUI
+	{
+		get { return MultiplayerLevelManager.Instance != null ?
+				MultiplayerLevelManager.Instance.Chat :
+				NetworkManager.Instance.Chat; }
+	}
 
 	ChatClient chatClient;
 	public ChatClient ChatClient { get { return chatClient; } }
 
-	public OnlineChatManager()
+	static OnlineChatManager instance;
+	public static OnlineChatManager Instance { get { return instance; } }
+
+	private void OnDestroy()
 	{
-		chatClient = new ChatClient(this);
+		if (instance == this)
+			instance = null;
 	}
 
-	private void OnEnable()
+	private void Awake()
 	{
-		bool activateChat = PhotonNetwork.CurrentRoom != null;
-		sendMessageButton.interactable = activateChat;
-		lastSender = string.Empty;
-	}
-
-	private void OnDisable()
-	{
-		foreach(Transform t in chatContent)
+		if(instance == null)
 		{
-			Destroy(t.gameObject);
+			instance = this;
+			chatClient = new ChatClient(this);
+			DontDestroyOnLoad(gameObject);
+		}
+		else
+		{
+			Destroy(gameObject);
 		}
 	}
 
@@ -64,14 +61,14 @@ public class OnlineChatManager : MonoBehaviour, IChatClientListener
 	public void OnConnected()
 	{
 		Debug.Log("Chat: Subscribed to Chat");
-		sendMessageButton.interactable = true;
+		ChatUI.SetSendButtonState(true);
 		chatClient.Subscribe(PhotonNetwork.CurrentRoom.Name, creationOptions: new ChannelCreationOptions() { PublishSubscribers = true });
 	}
 
 	public void OnDisconnected()
 	{
-		sendMessageButton.interactable = false;
-		gameObject.SetActive(false);
+		ChatUI.SetSendButtonState(false);
+		ChatUI.gameObject.SetActive(false);
 		Debug.Log("Chat: Unsubscribed from Chat");
 	}
 
@@ -82,19 +79,7 @@ public class OnlineChatManager : MonoBehaviour, IChatClientListener
 		{
 			for(int i = 0; i < messages.Length; i++)
 			{
-				GameObject go = Instantiate(chatMessagePrefab, chatContent);
-				if(lastSender == senders[i])
-				{
-					go.transform.GetChild(0).gameObject.SetActive(false);
-				}
-				else
-				{
-					go.transform.GetChild(0).GetComponent<TMP_Text>().text = senders[i];
-				}
-				go.transform.GetChild(1).GetComponent<TMP_Text>().text = messages[i].ToString();
-				LayoutRebuilder.ForceRebuildLayoutImmediate(go.GetComponent<RectTransform>());
-
-				lastSender = senders[i];
+				ChatUI.AddMessageToChat(senders[i], messages[i].ToString());
 			}
 		}
 	}
@@ -118,29 +103,20 @@ public class OnlineChatManager : MonoBehaviour, IChatClientListener
 	public void OnUserSubscribed(string channel, string user)
 	{
 		Debug.Log("user subscribed");
-		GameObject go = Instantiate(userJoinedLeftPrefab, chatContent);
-		TMP_Text text = go.GetComponent<TMP_Text>();
-		text.text = user + " has joined the room";
-		LayoutRebuilder.ForceRebuildLayoutImmediate(go.GetComponent<RectTransform>());
-		lastSender = "";
+		ChatUI.OnPlayersInRoomChanged(user, true);
 	}
 
 	public void OnUserUnsubscribed(string channel, string user)
 	{
 		Debug.Log("user unsubscribed");
-		GameObject go = Instantiate(userJoinedLeftPrefab, chatContent);
-		TMP_Text text = go.GetComponent<TMP_Text>();
-		text.text = user + " has left the room";
-		LayoutRebuilder.ForceRebuildLayoutImmediate(go.GetComponent<RectTransform>());
-		lastSender = "";
+		ChatUI.OnPlayersInRoomChanged(user, false);
 	}
 
-	public void SendChatMessage()
+	public void SendChatMessage(string text)
 	{
-		if (messageInputField.text.Length == 0)
+		if (text.Length == 0)
 			return;
 
-		chatClient.PublishMessage(PhotonNetwork.CurrentRoom.Name, messageInputField.text);
-		messageInputField.text = string.Empty;
+		chatClient.PublishMessage(PhotonNetwork.CurrentRoom.Name, text);
 	}
 }

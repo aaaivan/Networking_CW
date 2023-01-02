@@ -18,8 +18,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	[SerializeField]
 	Button listRoomsBtn;
 	[SerializeField]
-	OnlineChatManager chat;
-	public OnlineChatManager Chat { get { return chat; } }
+	OnlineChatUI chat;
+	public OnlineChatUI Chat { get { return chat; } }
 
 	string playerId;
 	public string PlayerId
@@ -85,6 +85,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		playerId = "";
 		PhotonNetwork.Disconnect();
+
+		// Disconnect the local player from the online chat
+		OnlineChatManager.Instance.ChatClient.Disconnect();
 	}
 
 	public override void OnDisconnected(DisconnectCause cause)
@@ -140,7 +143,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 		// Connect the local player to the online chat
 		var authenticationValues = new Photon.Chat.AuthenticationValues(PhotonNetwork.LocalPlayer.NickName);
-		chat.ChatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, "1.0", authenticationValues);
+		OnlineChatManager.Instance.ChatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, "1.0", authenticationValues);
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
@@ -173,7 +176,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public override void OnLeftRoom()
 	{
-		chat.ChatClient.Disconnect();
+		// Disconnect the local player from the online chat
+		OnlineChatManager.Instance.ChatClient.Disconnect();
 
 		Debug.Log("Room has been left.");
 		MenuNavigationManager.Instance.ShowMenu(2);
