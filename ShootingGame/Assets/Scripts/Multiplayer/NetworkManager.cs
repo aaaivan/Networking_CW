@@ -82,7 +82,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnConnectedToMaster()
 	{
 		Debug.Log(playerId + " has connected to the master sever!");
-		MenuNavigationManager.Instance.ShowMenu("RoomOptions");
+		MenuNavigationManager.Instance.ShowMenu("Multiplayer");
 		JoinLobby();
 
 		UpdateUserTitleDisplayNameRequest request = new UpdateUserTitleDisplayNameRequest()
