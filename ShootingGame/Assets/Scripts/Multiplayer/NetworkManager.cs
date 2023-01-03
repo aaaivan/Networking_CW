@@ -84,14 +84,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		Debug.Log(playerId + " has connected to the master sever!");
 		MenuNavigationManager.Instance.ShowMenu("Multiplayer");
 		JoinLobby();
-
-		UpdateUserTitleDisplayNameRequest request = new UpdateUserTitleDisplayNameRequest()
-		{
-			DisplayName = playerId,
-		};
-		PlayFabClientAPI.UpdateUserTitleDisplayName(request,
-			(UpdateUserTitleDisplayNameResult r) => { Debug.Log("PlayFab - User display name updated"); },
-			(PlayFabError e) => { Debug.LogFormat("PlayFab - Failed to update user display name: {0}", e.ErrorMessage); });
 	}
 
 	public void DisconnectFromMaster()
@@ -110,6 +102,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		{
 			MenuNavigationManager.Instance.ShowMenu("Login");
 		}
+
+		PlayFabClientAPI.ForgetAllCredentials();
 	}
 
 	public void CreateRoom(string name)

@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Leguar.TotalJSON;
-using PlayFab;
-using PlayFab.ClientModels;
 
 public class GameManager : MonoBehaviour
 {
 	PlayerData playerData = null;
+	string playFabPlayerID = "";
+
 	public PlayerData PlayerData { get { return playerData; } }
 
 	[SerializeField]
@@ -16,7 +14,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField]
 	string initializationVector16;
 	[SerializeField]
-	string fileName;
+	string extension;
 	string filePath;
 
 	static GameManager instance;
@@ -33,12 +31,14 @@ public class GameManager : MonoBehaviour
 		if(instance == null)
 		{
 			instance = this;
-			filePath = Application.persistentDataPath + "/" + fileName;
+			filePath = Application.persistentDataPath + "/HotCyclops/Saves";
+			if(!Directory.Exists(filePath))
+			{
+				Directory.CreateDirectory(filePath);
+			}
+
 			Debug.Log(filePath);
 			DontDestroyOnLoad(gameObject);
-
-			LoadPlayerData();
-			LoginToPlayFab();
 		}
 		else
 		{
@@ -46,42 +46,37 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	void LoginToPlayFab()
-	{
-		LoginWithCustomIDRequest request = new LoginWithCustomIDRequest()
-		{
-			CreateAccount = true,
-			CustomId = playerData.uid,
-		};
-		PlayFabClientAPI.LoginWithCustomID(request, PlayFabLoginResult, PlayFabLoginError);
-	}
-
-	void PlayFabLoginResult(LoginResult loginResult)
-	{
-		Debug.Log("PlayFab - Login Succeeded: " + loginResult.ToJson());
-	}
-
-	void PlayFabLoginError(PlayFabError playFabError)
-	{
-		Debug.Log("PlayFab - Login Failed: " + playFabError.ErrorMessage);
-	}
-
 	public void SavePlayerData()
 	{
+		if (playFabPlayerID == null)
+			return;
+
 		string serializedData = JSON.Serialize(playerData).CreateString();
 		string encodedData = EncodeToBase64(serializedData);
 		byte[] encryptedData = AesEncryption.Encrypt(encodedData, encryptionKey32, initializationVector16);
-		File.WriteAllBytes(filePath, encryptedData);
+
+		string filename = playFabPlayerID + extension;
+		string path = Path.Combine(filePath, filename);
+
+		File.WriteAllBytes(path, encryptedData);
 	}
 
 	public void LoadPlayerData()
 	{
-		if(!File.Exists(filePath))
+		if (playFabPlayerID == null)
+			return;
+
+		if (!File.Exists(filePath))
 		{
 			playerData = new PlayerData();
 			SavePlayerData();
 		}
-		byte[] encryptedData = File.ReadAllBytes(filePath);
+
+		string filename = playFabPlayerID + extension;
+		string path = Path.Combine(filePath, filename);
+
+		byte[] encryptedData = File.ReadAllBytes(path);
+
 		string encodedData = AesEncryption.Decrypt(encryptedData, encryptionKey32, initializationVector16);
 		string serializedData = DecodeFromBase64(encodedData);
 		playerData = JSON.ParseString(serializedData).Deserialize<PlayerData>();
@@ -97,5 +92,11 @@ public class GameManager : MonoBehaviour
 	{
 		var dataBytes = System.Convert.FromBase64String(base64string);
 		return System.Text.Encoding.UTF8.GetString(dataBytes);
+	}
+
+	public void SetPlayFabID(string id)
+	{
+		playFabPlayerID = id;
+		LoadPlayerData();
 	}
 }
