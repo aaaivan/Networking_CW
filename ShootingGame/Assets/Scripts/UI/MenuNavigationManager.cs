@@ -5,7 +5,7 @@ using UnityEngine;
 public class MenuNavigationManager : MonoBehaviour
 {
 	[SerializeField]
-	GameObject[] menus;
+	MenuData[] menuData;
 	
 	static MenuNavigationManager instance;
 
@@ -37,23 +37,34 @@ public class MenuNavigationManager : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// Show the menu with the specified id and hide th eothers
-	/// </summary>
-	/// <param name="id">id of the menu to show</param>
-	public void ShowMenu(int id)
+	public void ShowMenu(string menuName)
 	{
-		for(int i = 0; i < menus.Length; i++)
+		bool found = false;
+
+		for (int i = 0; i < menuData.Length; i++)
 		{
-			menus[i].SetActive(i == id);
+			MenuData m = menuData[i];
+			m.menuObject.SetActive(m.menuName == menuName);
+
+			found |= m.menuName == menuName;
 		}
+
+		if(!found)
+		{
+			Debug.LogError($"No menu called {menuName} exists!");
+		}
+
 	}
 
-	public GameObject MenuGet(int index)
+	public GameObject MenuGet(string menuName)
 	{
-		if(index < 0 || index >= menus.Length)
-			return null;
+		for (int i = 0; i < menuData.Length; i++)
+		{
+			MenuData m = menuData[i];
+			if (m.menuName == menuName)
+				return m.menuObject;
+		}
 
-		return menus[index];
+		return null;
 	}
 }

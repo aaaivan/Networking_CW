@@ -72,7 +72,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		if (!playersMap.ContainsKey(photonPlayer))
 		{
 			playersMap.Add(photonPlayer, gameObjPlayer);
-			Scoreboard scoreboard = MenuNavigationManager.Instance.MenuGet(0).GetComponent<Scoreboard>();
+			Scoreboard scoreboard = MenuNavigationManager.Instance.MenuGet("Scoreboard").GetComponent<Scoreboard>();
 			scoreboard.UpdateScoreboard(gameObjPlayer);
 		}
 	}
@@ -184,9 +184,9 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 		playing = false;
 
-		MultiplayerGameOver gameOverScreen = MenuNavigationManager.Instance.MenuGet(1).GetComponent<MultiplayerGameOver>();
+		MultiplayerGameOver gameOverScreen = MenuNavigationManager.Instance.MenuGet("GameOver").GetComponent<MultiplayerGameOver>();
 		gameOverScreen.SetWinners(winners);
-		MenuNavigationManager.Instance.ShowMenu(1);
+		MenuNavigationManager.Instance.ShowMenu("GameOver");
 
 		// Disable players controls and show the mouse cursor
 		InputsManager.Instance.DisableThirdPersonInputs();
@@ -217,7 +217,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		}
 		else // if we disconnected because of a network issue, show the disconnection message
 		{
-			MenuNavigationManager.Instance.ShowMenu(2);
+			MenuNavigationManager.Instance.ShowMenu("Disconnected");
 			InputsManager.Instance.DisableThirdPersonInputs();
 		}
 	}
@@ -265,6 +265,6 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		hash[RematchScreen.readyToRematchKey] = true;
 		PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 
-		MenuNavigationManager.Instance.ShowMenu(3);
+		MenuNavigationManager.Instance.ShowMenu("Rematch");
 	}
 }

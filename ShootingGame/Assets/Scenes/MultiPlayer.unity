@@ -1998,7 +1998,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1601055267}
   m_HandleRect: {fileID: 1601055266}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4488,7 +4488,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1738843975}
   m_HandleRect: {fileID: 1738843974}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -22758,7 +22758,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2035788464}
   m_HandleRect: {fileID: 2035788463}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -27867,7 +27867,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1487636618}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -34996,6 +34996,15 @@ MonoBehaviour:
   - {fileID: 807333259}
   - {fileID: 103916048}
   - {fileID: 1527563906}
+  menuData:
+  - menuName: Scoreboard
+    menuObject: {fileID: 145187038}
+  - menuName: GameOver
+    menuObject: {fileID: 807333259}
+  - menuName: Disconnected
+    menuObject: {fileID: 103916048}
+  - menuName: Rematch
+    menuObject: {fileID: 1527563906}
 --- !u!1 &1481236451
 GameObject:
   m_ObjectHideFlags: 0
@@ -53872,7 +53881,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1557316230}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.9999991
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -53999,7 +54008,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 280072741}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

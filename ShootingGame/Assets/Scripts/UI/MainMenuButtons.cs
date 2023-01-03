@@ -13,7 +13,7 @@ public class MainMenuButtons : MonoBehaviour
 
 	public void ShowRooms()
 	{
-		MenuNavigationManager.Instance.ShowMenu(4);
+		MenuNavigationManager.Instance.ShowMenu("RoomList");
 	}
 
 	public void Disconnect()
@@ -29,7 +29,7 @@ public class MainMenuButtons : MonoBehaviour
 
 	public void ShowRoomOptions()
 	{
-		MenuNavigationManager.Instance.ShowMenu(2);
+		MenuNavigationManager.Instance.ShowMenu("RoomOptions");
 	}
 
 	public void LeaveRoom()

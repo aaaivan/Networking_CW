@@ -8,7 +8,7 @@ using PlayFab.ClientModels;
 
 public class GameManager : MonoBehaviour
 {
-	PlayerData playerData;
+	PlayerData playerData = null;
 	public PlayerData PlayerData { get { return playerData; } }
 
 	[SerializeField]

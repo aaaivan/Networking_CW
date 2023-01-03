@@ -82,7 +82,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnConnectedToMaster()
 	{
 		Debug.Log(playerId + " has connected to the master sever!");
-		MenuNavigationManager.Instance.ShowMenu(2);
+		MenuNavigationManager.Instance.ShowMenu("RoomOptions");
 		JoinLobby();
 
 		UpdateUserTitleDisplayNameRequest request = new UpdateUserTitleDisplayNameRequest()
@@ -108,7 +108,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		Debug.Log("Disconnected from the master server (" + cause + ")");
 		if (MenuNavigationManager.Instance != null)
 		{
-			MenuNavigationManager.Instance.ShowMenu(1);
+			MenuNavigationManager.Instance.ShowMenu("Login");
 		}
 	}
 
@@ -145,7 +145,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnJoinedRoom()
 	{
 		Debug.Log("Room joined successfully!");
-		MenuNavigationManager.Instance.ShowMenu(5);
+		MenuNavigationManager.Instance.ShowMenu("RoomView");
 		if (startGameBtn != null) // only the master client can start the game
 			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 
@@ -193,7 +193,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		OnlineChatManager.Instance.ChatClient.Disconnect();
 
 		Debug.Log("Room has been left.");
-		MenuNavigationManager.Instance.ShowMenu(2);
+		MenuNavigationManager.Instance.ShowMenu("RoomOptions");
 		JoinLobby();
 	}
 
