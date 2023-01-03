@@ -88,7 +88,7 @@ public class GlobalLeaderboard : MonoBehaviour
 		for(int i = 0; i < entries.Count; ++i)
 		{
 			PlayerLeaderboardEntry entry = entries[i];
-			NetworkManager.Instance.Leaderboard.AddLeaderboardScore(i + 1, entry.PlayFabId, entry.StatValue);
+			NetworkManager.Instance.Leaderboard.AddLeaderboardScore(i + 1, entry.DisplayName, entry.StatValue);
 		}
 	}
 

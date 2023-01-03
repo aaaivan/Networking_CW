@@ -1,6 +1,8 @@
 using Photon.Chat;
 using Photon.Pun;
 using Photon.Realtime;
+using PlayFab;
+using PlayFab.ClientModels;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -82,6 +84,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		Debug.Log(playerId + " has connected to the master sever!");
 		MenuNavigationManager.Instance.ShowMenu(2);
 		JoinLobby();
+
+		UpdateUserTitleDisplayNameRequest request = new UpdateUserTitleDisplayNameRequest()
+		{
+			DisplayName = playerId,
+		};
+		PlayFabClientAPI.UpdateUserTitleDisplayName(request,
+			(UpdateUserTitleDisplayNameResult r) => { Debug.Log("PlayFab - User display name updated"); },
+			(PlayFabError e) => { Debug.LogFormat("PlayFab - Failed to update user display name: {0}", e.ErrorMessage); });
 	}
 
 	public void DisconnectFromMaster()

@@ -21613,7 +21613,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   encryptionKey32: c8%C]8bZ^,3Q5?'`Tf<:(/e'*+1x=yYe
   initializationVector16: ',\bJ9h%HaQ3<";R3'
-  fileName: PlayerSave.dat
+  fileName: PlayerSave.cyclopsave
 --- !u!4 &549254464
 Transform:
   m_ObjectHideFlags: 0

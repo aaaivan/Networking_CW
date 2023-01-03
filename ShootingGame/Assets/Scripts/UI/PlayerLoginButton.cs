@@ -10,7 +10,7 @@ public class PlayerLoginButton : MonoBehaviour
 
 	public void OnSubmit()
 	{
-		if(playerName.text.Length > 0)
+		if(playerName.text.Trim().Length > 0)
 		{
 			NetworkManager.Instance.ConnectToMaster(playerName.text);
 		}
