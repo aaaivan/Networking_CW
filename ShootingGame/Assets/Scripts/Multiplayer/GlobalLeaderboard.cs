@@ -77,6 +77,19 @@ public class GlobalLeaderboard : MonoBehaviour
 	public void PlayFabGetLeaderboardResult(GetLeaderboardResult result)
 	{
 		Debug.Log("PlayFab - Leaderboard fetched succesfully");
+		List<PlayerLeaderboardEntry> entries = result.Leaderboard;
+
+		if(entries.Count == 0)
+		{
+			NetworkManager.Instance.Leaderboard.ShowNoScoreText();
+			return;
+		}
+
+		for(int i = 0; i < entries.Count; ++i)
+		{
+			PlayerLeaderboardEntry entry = entries[i];
+			NetworkManager.Instance.Leaderboard.AddLeaderboardScore(i + 1, entry.PlayFabId, entry.StatValue);
+		}
 	}
 
 	public void PlayFabGetLeaderboardError(PlayFabError error)

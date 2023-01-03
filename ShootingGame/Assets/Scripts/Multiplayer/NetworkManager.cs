@@ -20,6 +20,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	[SerializeField]
 	OnlineChatUI chat;
 	public OnlineChatUI Chat { get { return chat; } }
+	[SerializeField]
+	LeaderboardUI leaderboard;
+	public LeaderboardUI Leaderboard { get { return leaderboard; } }
 
 	string playerId;
 	public string PlayerId
