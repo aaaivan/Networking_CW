@@ -1,6 +1,8 @@
 using System.IO;
 using UnityEngine;
 using Leguar.TotalJSON;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class GameManager : MonoBehaviour
 {
@@ -98,5 +100,45 @@ public class GameManager : MonoBehaviour
 	{
 		playFabPlayerID = id;
 		LoadPlayerData();
+
+		// fetch the total number of kills from the PlayFab server
+		GetLeaderboardAroundPlayerRequest request1 = new GetLeaderboardAroundPlayerRequest()
+		{
+			PlayFabId = playFabPlayerID,
+			MaxResultsCount = 1,
+			StatisticName = GlobalLeaderboard.Instance.mostKillsName,
+		};
+		PlayFabClientAPI.GetLeaderboardAroundPlayer(request1,
+			GetTotalKillsResult,
+			(error) => { Debug.Log("PlayFab - Error: " + error.ErrorMessage); });
+
+		// fetch the total number of games from the PlayFab server
+		GetLeaderboardAroundPlayerRequest request2 = new GetLeaderboardAroundPlayerRequest()
+		{
+			PlayFabId = playFabPlayerID,
+			MaxResultsCount = 1,
+			StatisticName = GlobalLeaderboard.Instance.totalGamesName,
+		};
+		PlayFabClientAPI.GetLeaderboardAroundPlayer(request2,
+			GetTotalGamesResult,
+			(error) => { Debug.Log("PlayFab - Error: " + error.ErrorMessage); });
+	}
+
+	void GetTotalKillsResult(GetLeaderboardAroundPlayerResult result)
+	{
+		if (result.Leaderboard.Count != 1)
+			return;
+
+		playerData.totalKills = result.Leaderboard[0].StatValue;
+		SavePlayerData();
+	}
+
+	void GetTotalGamesResult(GetLeaderboardAroundPlayerResult result)
+	{
+		if (result.Leaderboard.Count != 1)
+			return;
+
+		playerData.totalGames = result.Leaderboard[0].StatValue;
+		SavePlayerData();
 	}
 }

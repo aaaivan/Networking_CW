@@ -8,8 +8,8 @@ using System;
 public class GlobalLeaderboard : MonoBehaviour
 {
 	int maxEntries = 10;
-	string mostKillsName = "Most Kills";
-	string totalGamesName = "Total Games";
+	public readonly string mostKillsName = "Most Kills";
+	public readonly string totalGamesName = "Total Games";
 
 	Dictionary<string, int> totalGamesDict = new Dictionary<string, int>();
 
