@@ -16,8 +16,6 @@ public class PlayerLoginButton : MonoBehaviour
 	string instructionString = "The username must be at least 3 characters long.\nThe password must be at least 6 characters long.";
 	string connectingString = "Connecting...";
 
-	string playerNickname = string.Empty;
-
 	private void Awake()
 	{
 		playerNameField.onSelect.AddListener((string s) =>
@@ -54,12 +52,21 @@ public class PlayerLoginButton : MonoBehaviour
 	void LogIn(string username, string encodedPass)
 	{
 		warningText.text = connectingString;
-		playerNickname = username;
 
 		LoginWithPlayFabRequest request = new LoginWithPlayFabRequest()
 		{
 			Password = encodedPass,
 			Username = username,
+			InfoRequestParameters = new GetPlayerCombinedInfoRequestParams()
+			{
+				// make sure PlayerProfile is included
+				GetPlayerProfile = true,
+				// Define rules for PlayerProfile request
+				ProfileConstraints = new PlayerProfileViewConstraints()
+				{
+					ShowDisplayName = true,
+				}
+			}
 		};
 		PlayFabClientAPI.LoginWithPlayFab(request, LoginSuccessCallback, LoginFailCallback);
 	}
@@ -68,15 +75,13 @@ public class PlayerLoginButton : MonoBehaviour
 	{
 		Debug.Log("PlayFab - Login success for user: " + result.PlayFabId);
 		GameManager.Instance.SetPlayFabID(result.PlayFabId);
-		NetworkManager.Instance.ConnectToMaster(playerNickname);
-		playerNickname = string.Empty;
+		NetworkManager.Instance.ConnectToMaster(result.InfoResultPayload.PlayerProfile.DisplayName);
 	}
 
 	void LoginFailCallback(PlayFabError error)
 	{
 		Debug.Log("PlayFab - Login fail: " + error.ErrorMessage);
 		warningText.text = error.ErrorMessage;
-		playerNickname = string.Empty;
 	}
 
 

@@ -149,6 +149,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnJoinedRoom()
 	{
 		Debug.Log("Room joined successfully!");
+
+		foreach(var p in PhotonNetwork.PlayerListOthers)
+		{
+			if(p.NickName == PhotonNetwork.LocalPlayer.NickName)
+			{
+				LeaveRoom();
+				return;
+			}
+		}
+
 		MenuNavigationManager.Instance.ShowMenu("RoomView");
 		if (startGameBtn != null) // only the master client can start the game
 			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);

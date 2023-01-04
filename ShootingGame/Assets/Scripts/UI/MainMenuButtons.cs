@@ -37,8 +37,25 @@ public class MainMenuButtons : MonoBehaviour
 		NetworkManager.Instance.leavingRoom = true;
 		NetworkManager.Instance.LeaveRoom();
 	}
+
 	public void StartMultiplayerGame()
 	{
+		var players = PhotonNetwork.PlayerList;
+		List<string> playerNames = new List<string>();
+
+		// make sure there aren't players with the same nickname
+		foreach (var player in players)
+		{
+			if(playerNames.Contains(player.NickName))
+			{
+				return;
+			}
+			else
+			{
+				playerNames.Add(player.NickName);
+			}
+		}
+
 		PhotonNetwork.CurrentRoom.IsOpen = false;
 		PhotonNetwork.CurrentRoom.IsVisible = false;
 		PhotonNetwork.LoadLevel("MultiPlayer");
