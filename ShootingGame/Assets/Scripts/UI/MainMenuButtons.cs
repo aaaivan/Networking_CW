@@ -34,6 +34,7 @@ public class MainMenuButtons : MonoBehaviour
 
 	public void LeaveRoom()
 	{
+		NetworkManager.Instance.leavingRoom = true;
 		NetworkManager.Instance.LeaveRoom();
 	}
 	public void StartMultiplayerGame()

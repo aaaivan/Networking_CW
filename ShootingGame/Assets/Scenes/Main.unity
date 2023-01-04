@@ -2122,6 +2122,7 @@ MonoBehaviour:
   usernameField: {fileID: 985561840}
   leaderboard: {fileID: 1266495175}
   disconnectOnLeaveLobby: 0
+  leavingRoom: 0
 --- !u!4 &84094569
 Transform:
   m_ObjectHideFlags: 0
@@ -45109,7 +45110,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1579929523}
   m_OnClick:
     m_PersistentCalls:

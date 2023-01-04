@@ -44,6 +44,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	[HideInInspector]
 	public bool disconnectOnLeaveLobby = false;
+	[HideInInspector]
+	public bool leavingRoom = false;
 
 	static NetworkManager instance;
 	static public NetworkManager Instance
@@ -86,7 +88,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnConnectedToMaster()
 	{
 		Debug.Log(playerId + " has connected to the master sever!");
-		MenuNavigationManager.Instance.ShowMenu("Multiplayer");
+		if(!leavingRoom)
+			MenuNavigationManager.Instance.ShowMenu("Multiplayer");
+
+		leavingRoom = false;
 		JoinLobby();
 	}
 
