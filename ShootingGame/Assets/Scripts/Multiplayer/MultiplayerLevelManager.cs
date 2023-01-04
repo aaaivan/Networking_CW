@@ -79,7 +79,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	private void Update()
 	{
-		if(Input.GetKeyUp(KeyCode.Escape) && playing)
+		if(Input.GetKeyUp(KeyCode.C) && playing)
 		{
 			InputsManager.Instance.ToggleThirdPersonInputs();
 		}
