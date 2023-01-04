@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using System;
 
 public class GlobalLeaderboard : MonoBehaviour
 {
-	[SerializeField]
-	int maxEntries = 5;
-	[SerializeField]
-	string statisticName = "Most Kills";
+	int maxEntries = 10;
+	string mostKillsName = "Most Kills";
+	string totalGamesName = "Total Games";
+
+	Dictionary<string, int> totalGamesDict = new Dictionary<string, int>();
+
 
 	static GlobalLeaderboard instance;
 	public static GlobalLeaderboard Instance
@@ -37,41 +40,65 @@ public class GlobalLeaderboard : MonoBehaviour
 		}
 	}
 
-	public void SubmitScore(int playerScore)
+	public void UpdateLeaderboard()
 	{
-		UpdatePlayerStatisticsRequest request = new UpdatePlayerStatisticsRequest()
+		PlayerData playerData = GameManager.Instance.PlayerData;
+
+		UpdatePlayerStatisticsRequest request1 = new UpdatePlayerStatisticsRequest()
 		{
 			Statistics = new List<StatisticUpdate>
 			{
 				new StatisticUpdate()
 				{
-					StatisticName = statisticName,
-					Value = playerScore,
+					StatisticName = mostKillsName,
+					Value = playerData.totalKills,
 				}
 			}
 		};
+		PlayFabClientAPI.UpdatePlayerStatistics(request1,
+			(result) => { Debug.Log("PlayFab - Score Submitted"); },
+			(error) => { Debug.Log("PlayFab Error: " + error); });
 
-		PlayFabClientAPI.UpdatePlayerStatistics(request, PlayFabUpdateStatsResult, PlayFabUpdateStatsError);
+		UpdatePlayerStatisticsRequest request2 = new UpdatePlayerStatisticsRequest()
+		{
+			Statistics = new List<StatisticUpdate>
+			{
+				new StatisticUpdate()
+				{
+					StatisticName = totalGamesName,
+					Value = playerData.totalGames,
+				}
+			}
+		};
+		PlayFabClientAPI.UpdatePlayerStatistics(request2,
+			(result) => { Debug.Log("PlayFab - Score Submitted"); },
+			(error) => { Debug.Log("PlayFab Error: " + error); });
 	}
 
-	void PlayFabUpdateStatsResult(UpdatePlayerStatisticsResult result)
+	public void GetLeaderboards()
 	{
-		Debug.Log("PlayFab - Score Submitted");
-	}
+		Action<GetLeaderboardResult> sucessCallback = (result) =>
+		{
+			GetLeaderboardRequest request = new GetLeaderboardRequest()
+			{
+				MaxResultsCount = maxEntries,
+				StatisticName = mostKillsName,
+			};
+			PlayFabClientAPI.GetLeaderboard(request, PlayFabGetLeaderboardResult, PlayFabGetLeaderboardError);
 
-	void PlayFabUpdateStatsError(PlayFabError error)
-	{
-		Debug.Log("PlayFab Error: " + error);
-	}
+			List<PlayerLeaderboardEntry> entries = result.Leaderboard;
+			foreach(var e in entries)
+			{
+				totalGamesDict.Add(e.PlayFabId, e.StatValue);
+			}
+		};
 
-	public void GetLeaderboard()
-	{
 		GetLeaderboardRequest request = new GetLeaderboardRequest()
 		{
 			MaxResultsCount = maxEntries,
-			StatisticName = statisticName,
+			StatisticName = totalGamesName,
 		};
-		PlayFabClientAPI.GetLeaderboard(request, PlayFabGetLeaderboardResult, PlayFabGetLeaderboardError);
+		PlayFabClientAPI.GetLeaderboard(request, sucessCallback, PlayFabGetLeaderboardError);
 	}
 
 	public void PlayFabGetLeaderboardResult(GetLeaderboardResult result)
@@ -88,12 +115,19 @@ public class GlobalLeaderboard : MonoBehaviour
 		for(int i = 0; i < entries.Count; ++i)
 		{
 			PlayerLeaderboardEntry entry = entries[i];
-			NetworkManager.Instance.Leaderboard.AddLeaderboardScore(i + 1, entry.DisplayName, entry.StatValue);
+			string playerId = entry.PlayFabId;
+			if(totalGamesDict.ContainsKey(playerId))
+			{
+				NetworkManager.Instance.Leaderboard.AddLeaderboardScore(entry.Position + 1, entry.DisplayName, totalGamesDict[playerId], entry.StatValue);
+			}
 		}
+
+		totalGamesDict.Clear();
 	}
 
 	public void PlayFabGetLeaderboardError(PlayFabError error)
 	{
 		Debug.Log("PlayFab Error: " + error);
+		totalGamesDict.Clear();
 	}
 }

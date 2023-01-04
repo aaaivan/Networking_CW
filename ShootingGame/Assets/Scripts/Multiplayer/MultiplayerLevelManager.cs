@@ -112,25 +112,31 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 			List<string> winners;
 			ComputeWinners(out winners); 
 			EndGame(winners);
-			StorePersonalBest();
+			UpdatePlayerData();
 		}
 	}
 
-	void StorePersonalBest()
+	void UpdatePlayerData()
 	{
 		int score = PhotonNetwork.LocalPlayer.GetScore();
 		PlayerData playerData = GameManager.Instance.PlayerData;
-		if(score > playerData.bestScore)
+
+		playerData.username = PhotonNetwork.LocalPlayer.NickName;
+		playerData.totalKills += score;
+		playerData.totalGames += 1;
+
+		if (score > playerData.bestScore ||
+			(score == playerData.bestScore && (int)TimeLeft > playerData.bestTime))
 		{
-			playerData.username = PhotonNetwork.LocalPlayer.NickName;
 			playerData.bestScore = score;
+			playerData.bestTime = (int)TimeLeft;
 			playerData.bestScoreDate = DateTime.UtcNow.ToString();
 			playerData.playersInGame = PhotonNetwork.PlayerList.Length;
 			playerData.roomName = PhotonNetwork.CurrentRoom.Name;
-
-			GlobalLeaderboard.Instance.SubmitScore(score);
-			GameManager.Instance.SavePlayerData();
 		}
+
+		GameManager.Instance.SavePlayerData();
+		GlobalLeaderboard.Instance.UpdateLeaderboard();
 	}
 
 	/// <summary>

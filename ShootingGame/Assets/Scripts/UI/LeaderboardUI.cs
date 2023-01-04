@@ -14,6 +14,8 @@ public class LeaderboardUI : MonoBehaviour
 	RectTransform leaderboardScrollView;
 	[SerializeField]
 	RectTransform noScoreText;
+	[SerializeField]
+	RectTransform loadingText;
 
 	string entryText = "{0} - {1}";
 
@@ -26,8 +28,9 @@ public class LeaderboardUI : MonoBehaviour
 
 		noScoreText.gameObject.SetActive(false);
 		leaderboardScrollView.gameObject.SetActive(false);
+		loadingText.gameObject.SetActive(true);
 
-		GlobalLeaderboard.Instance.GetLeaderboard();
+		GlobalLeaderboard.Instance.GetLeaderboards();
 	}
 
 	private void OnDisable()
@@ -38,14 +41,16 @@ public class LeaderboardUI : MonoBehaviour
 		}
 	}
 
-	public void AddLeaderboardScore(int ranking, string player, int score)
+	public void AddLeaderboardScore(int ranking, string player, int numGames, int score)
 	{
 		noScoreText.gameObject.SetActive(false);
 		leaderboardScrollView.gameObject.SetActive(true);
+		loadingText.gameObject.SetActive(false);
 
 		GameObject go = Instantiate(leaderboardEntryPrefab, leaderboardContent);
-		go.transform.Find("Key").GetComponent<TMP_Text>().text = string.Format(entryText, ranking, player);
-		go.transform.Find("Value").GetComponent<TMP_Text>().text = score.ToString();
+		go.transform.Find("Player").GetComponent<TMP_Text>().text = string.Format(entryText, ranking, player);
+		go.transform.Find("Games").GetComponent<TMP_Text>().text = numGames.ToString();
+		go.transform.Find("Score").GetComponent<TMP_Text>().text = score.ToString();
 
 		if (ranking % 2 == 1)
 		{
@@ -58,5 +63,6 @@ public class LeaderboardUI : MonoBehaviour
 	{
 		noScoreText.gameObject.SetActive(true);
 		leaderboardScrollView.gameObject.SetActive(false);
+		loadingText.gameObject.SetActive(false);
 	}
 }

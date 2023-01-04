@@ -66,14 +66,14 @@ public class GameManager : MonoBehaviour
 		if (playFabPlayerID == null)
 			return;
 
-		if (!File.Exists(filePath))
+		string filename = playFabPlayerID + extension;
+		string path = Path.Combine(filePath, filename);
+
+		if (!File.Exists(path))
 		{
 			playerData = new PlayerData();
 			SavePlayerData();
 		}
-
-		string filename = playFabPlayerID + extension;
-		string path = Path.Combine(filePath, filename);
 
 		byte[] encryptedData = File.ReadAllBytes(path);
 

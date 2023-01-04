@@ -21,6 +21,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	Button listRoomsBtn;
 	[SerializeField]
 	OnlineChatUI chat;
+	[SerializeField]
+	TMP_Text usernameField;
+
 	public OnlineChatUI Chat { get { return chat; } }
 	[SerializeField]
 	LeaderboardUI leaderboard;
@@ -75,6 +78,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public void ConnectToMaster(string id)
 	{
 		playerId = id;
+		usernameField.text = playerId;
 		PhotonNetwork.LocalPlayer.NickName = playerId;
 		PhotonNetwork.ConnectUsingSettings();
 	}
@@ -89,6 +93,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public void DisconnectFromMaster()
 	{
 		playerId = "";
+		usernameField.text = playerId;
 		PhotonNetwork.Disconnect();
 
 		// Disconnect the local player from the online chat
