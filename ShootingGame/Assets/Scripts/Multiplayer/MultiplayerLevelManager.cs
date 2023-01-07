@@ -79,7 +79,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
 	private void Update()
 	{
-		if(Input.GetKeyUp(KeyCode.C) && playing)
+		if(Input.GetKeyUp(KeyCode.Escape) && playing)
 		{
 			InputsManager.Instance.ToggleThirdPersonInputs();
 		}
@@ -214,7 +214,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 		playing = false;
 
 		// Disconnect the local player from the online chat
-		OnlineChatManager.Instance.ChatClient.Disconnect();
+		OnlineChatManager.Instance.DisconnectFromChat();
 		chat.gameObject.SetActive(false);
 
 		if (cause == DisconnectCause.DisconnectByClientLogic)

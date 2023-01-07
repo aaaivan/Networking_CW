@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System;
 using Photon.Pun;
-using Photon.Chat.Demo;
 
 public class OnlineChatUI : MonoBehaviour
 {
@@ -80,7 +78,7 @@ public class OnlineChatUI : MonoBehaviour
 
 	public void OnSendButtonClicked()
 	{
-		OnlineChatManager.Instance.SendChatMessage(messageInputField.text);
+		OnlineChatManager.Instance.SendChatMessage(PhotonNetwork.CurrentRoom.Name, messageInputField.text);
 		messageInputField.text = string.Empty;
 	}
 

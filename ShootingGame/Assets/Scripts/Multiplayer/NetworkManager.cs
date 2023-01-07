@@ -93,6 +93,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 		leavingRoom = false;
 		JoinLobby();
+
+		// Connect the local player to the online chat
+		OnlineChatManager.Instance.ConnectToChat();
 	}
 
 	public void DisconnectFromMaster()
@@ -102,7 +105,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		PhotonNetwork.Disconnect();
 
 		// Disconnect the local player from the online chat
-		OnlineChatManager.Instance.ChatClient.Disconnect();
+		OnlineChatManager.Instance.DisconnectFromChat();
 	}
 
 	public override void OnDisconnected(DisconnectCause cause)
@@ -168,9 +171,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		else
 			startGameBtn.interactable = false;
 
-		// Connect the local player to the online chat
-		var authenticationValues = new Photon.Chat.AuthenticationValues(PhotonNetwork.LocalPlayer.NickName);
-		OnlineChatManager.Instance.ChatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, "1.0", authenticationValues);
+		OnlineChatManager.Instance.SubscribeToChannel(PhotonNetwork.CurrentRoom.Name);
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
@@ -199,13 +200,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public void LeaveRoom()
 	{
 		PhotonNetwork.LeaveRoom();
+		OnlineChatManager.Instance.UnsubscribeFromChannel(PhotonNetwork.CurrentRoom.Name);
 	}
 
 	public override void OnLeftRoom()
 	{
-		// Disconnect the local player from the online chat
-		OnlineChatManager.Instance.ChatClient.Disconnect();
-
 		Debug.Log("Room has been left.");
 		MenuNavigationManager.Instance.ShowMenu("RoomOptions");
 		JoinLobby();
