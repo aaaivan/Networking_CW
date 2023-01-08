@@ -75,13 +75,18 @@ public class CreateAccount : MonoBehaviour
 		repeatPasswordField.text = "";
 	}
 
-	void DoCreateAccount(string username, string encodedPass)
+	/// <summary>
+	/// Create a player account with the specified username and password
+	/// </summary>
+	/// <param name="username"> Username. Cannot match an existing username. </param>
+	/// <param name="pass"> Password. Must be at least 6 characters. </param>
+	void DoCreateAccount(string username, string pass)
 	{
 		RegisterPlayFabUserRequest request = new RegisterPlayFabUserRequest()
 		{
-			DisplayName = username,
+			DisplayName = username, // use the username as the display name too
 			Username = username,
-			Password = encodedPass,
+			Password = pass,
 			RequireBothUsernameAndEmail = false,
 		};
 		PlayFabClientAPI.RegisterPlayFabUser(request, AccountCreatedSuccessCallback, AccountCreatedFailCallback);

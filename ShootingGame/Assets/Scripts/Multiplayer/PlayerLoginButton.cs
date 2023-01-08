@@ -49,13 +49,18 @@ public class PlayerLoginButton : MonoBehaviour
 		passwordField.text = "";
 	}
 
-	void LogIn(string username, string encodedPass)
+	/// <summary>
+	/// Login with specified username and password
+	/// </summary>
+	/// <param name="username"></param>
+	/// <param name="pass"></param>
+	void LogIn(string username, string pass)
 	{
 		warningText.text = connectingString;
 
 		LoginWithPlayFabRequest request = new LoginWithPlayFabRequest()
 		{
-			Password = encodedPass,
+			Password = pass,
 			Username = username,
 			InfoRequestParameters = new GetPlayerCombinedInfoRequestParams()
 			{
