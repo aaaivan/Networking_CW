@@ -72,6 +72,11 @@ public class GlobalLeaderboard : MonoBehaviour
 			(error) => { Debug.Log("PlayFab Error: " + error); });
 	}
 
+	/// <summary>
+	/// Fetch the players with highest number of total kills.
+	/// Request for all statistics and the display name
+	/// to be included in the result callback.
+	/// </summary>
 	public void GetLeaderboards()
 	{
 		GetLeaderboardRequest request = new GetLeaderboardRequest()
