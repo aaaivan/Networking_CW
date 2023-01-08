@@ -41,18 +41,23 @@ public class LeaderboardUI : MonoBehaviour
 		}
 	}
 
-	public void AddLeaderboardScore(int ranking, string player, int numGames, int score)
+	public void AddLeaderboardScore(int ranking, string player, int numGames, int score, bool localPlayer)
 	{
 		noScoreText.gameObject.SetActive(false);
 		leaderboardScrollView.gameObject.SetActive(true);
 		loadingText.gameObject.SetActive(false);
 
 		GameObject go = Instantiate(leaderboardEntryPrefab, leaderboardContent);
-		go.transform.Find("Player").GetComponent<TMP_Text>().text = string.Format(entryText, ranking, player);
+		go.transform.Find("Player").GetComponent<TMP_Text>().text = string.Format(entryText, ranking, localPlayer ? "YOU" : player);
 		go.transform.Find("Games").GetComponent<TMP_Text>().text = numGames.ToString();
 		go.transform.Find("Score").GetComponent<TMP_Text>().text = score.ToString();
 
-		if (ranking % 2 == 1)
+		if(localPlayer)
+		{
+			Image image = go.GetComponent<Image>();
+			image.color = new Color(0, 1, 0.5f, 0.1f);
+		}
+		else if (ranking % 2 == 1)
 		{
 			Image image = go.GetComponent<Image>();
 			image.color = new Color(0, 0, 0, 0);

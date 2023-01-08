@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
 	PlayerData playerData = null;
 	string playFabPlayerID = "";
+	public string PlayFabPlayerID { get { return playFabPlayerID; } }
 
 	public PlayerData PlayerData { get { return playerData; } }
 

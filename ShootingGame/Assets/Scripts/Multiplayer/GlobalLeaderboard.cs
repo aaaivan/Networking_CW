@@ -11,9 +11,6 @@ public class GlobalLeaderboard : MonoBehaviour
 	public readonly string mostKillsName = "Most Kills";
 	public readonly string totalGamesName = "Total Games";
 
-	Dictionary<string, int> totalGamesDict = new Dictionary<string, int>();
-
-
 	static GlobalLeaderboard instance;
 	public static GlobalLeaderboard Instance
 	{
@@ -77,28 +74,17 @@ public class GlobalLeaderboard : MonoBehaviour
 
 	public void GetLeaderboards()
 	{
-		Action<GetLeaderboardResult> sucessCallback = (result) =>
-		{
-			GetLeaderboardRequest request = new GetLeaderboardRequest()
-			{
-				MaxResultsCount = maxEntries,
-				StatisticName = mostKillsName,
-			};
-			PlayFabClientAPI.GetLeaderboard(request, PlayFabGetLeaderboardResult, PlayFabGetLeaderboardError);
-
-			List<PlayerLeaderboardEntry> entries = result.Leaderboard;
-			foreach(var e in entries)
-			{
-				totalGamesDict.Add(e.PlayFabId, e.StatValue);
-			}
-		};
-
 		GetLeaderboardRequest request = new GetLeaderboardRequest()
 		{
 			MaxResultsCount = maxEntries,
-			StatisticName = totalGamesName,
+			StatisticName = mostKillsName,
+			ProfileConstraints = new PlayerProfileViewConstraints()
+			{
+				ShowStatistics = true,
+				ShowDisplayName = true,
+			},
 		};
-		PlayFabClientAPI.GetLeaderboard(request, sucessCallback, PlayFabGetLeaderboardError);
+		PlayFabClientAPI.GetLeaderboard(request, PlayFabGetLeaderboardResult, PlayFabGetLeaderboardError);
 	}
 
 	public void PlayFabGetLeaderboardResult(GetLeaderboardResult result)
@@ -116,18 +102,15 @@ public class GlobalLeaderboard : MonoBehaviour
 		{
 			PlayerLeaderboardEntry entry = entries[i];
 			string playerId = entry.PlayFabId;
-			if(totalGamesDict.ContainsKey(playerId))
-			{
-				NetworkManager.Instance.Leaderboard.AddLeaderboardScore(entry.Position + 1, entry.DisplayName, totalGamesDict[playerId], entry.StatValue);
-			}
-		}
+			List<StatisticModel> stats = entry.Profile.Statistics;
+			int totalGamesIndex = stats.FindIndex((x) => x.Name == totalGamesName);
 
-		totalGamesDict.Clear();
+			NetworkManager.Instance.Leaderboard.AddLeaderboardScore(entry.Position + 1, entry.DisplayName, stats[totalGamesIndex].Value, entry.StatValue, playerId == GameManager.Instance.PlayFabPlayerID);
+		}
 	}
 
 	public void PlayFabGetLeaderboardError(PlayFabError error)
 	{
 		Debug.Log("PlayFab Error: " + error);
-		totalGamesDict.Clear();
 	}
 }
