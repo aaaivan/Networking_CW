@@ -68,6 +68,7 @@ public class OnlineChatManager : MonoBehaviour, IChatClientListener
 	public void OnConnected()
 	{
 		Debug.Log("Chat: Subscribed to Chat");
+		SubscribeToChannel(PhotonNetwork.CurrentRoom.Name);
 	}
 
 	/// <summary>

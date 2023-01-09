@@ -82,6 +82,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		playerId = id;
 		usernameField.text = playerId;
 		PhotonNetwork.LocalPlayer.NickName = playerId;
+		PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues(playerId);
 		PhotonNetwork.ConnectUsingSettings();
 	}
 
@@ -93,9 +94,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 		leavingRoom = false;
 		JoinLobby();
-
-		// Connect the local player to the online chat
-		OnlineChatManager.Instance.ConnectToChat();
 	}
 
 	public void DisconnectFromMaster()
@@ -152,16 +150,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public override void OnJoinedRoom()
 	{
 		Debug.Log("Room joined successfully!");
-
-		foreach(var p in PhotonNetwork.PlayerListOthers)
-		{
-			if(p.NickName == PhotonNetwork.LocalPlayer.NickName)
-			{
-				LeaveRoom();
-				return;
-			}
-		}
-
 		MenuNavigationManager.Instance.ShowMenu("RoomView");
 		if (startGameBtn != null) // only the master client can start the game
 			startGameBtn.gameObject.SetActive(PhotonNetwork.IsMasterClient);
@@ -171,7 +159,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		else
 			startGameBtn.interactable = false;
 
-		OnlineChatManager.Instance.SubscribeToChannel(PhotonNetwork.CurrentRoom.Name);
+		// Connect the local player to the online chat
+		OnlineChatManager.Instance.ConnectToChat();
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
@@ -200,7 +189,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public void LeaveRoom()
 	{
 		PhotonNetwork.LeaveRoom();
-		OnlineChatManager.Instance.UnsubscribeFromChannel(PhotonNetwork.CurrentRoom.Name);
+		OnlineChatManager.Instance.DisconnectFromChat();
 	}
 
 	public override void OnLeftRoom()
