@@ -41,7 +41,7 @@ public class PlayerLoginButton : MonoBehaviour
 
 	public void OnSubmit()
 	{
-		if(playerNameField.text.Trim().Length > 0 && passwordField.text.Length >= 6)
+		if(playerNameField.text.Trim().Length > 0 && passwordField.text.Length > 0)
 		{
 			LogIn(playerNameField.text.Trim(), CreateAccount.MD5Hash(passwordField.text));
 		}
