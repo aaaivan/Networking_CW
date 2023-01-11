@@ -38,8 +38,14 @@ public class GlobalLeaderboard : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Update the total kills and the score statistics on the PlayFab server
+	/// </summary>
+	/// <param name="totalKills"> number of kills in the last game - this value will be added to the current value </param>
+	/// <param name="score"> score of the last game - this value will be added to the current value </param>
 	public void UpdateLeaderboard(int totalKills, int score)
 	{
+		// Update the total kills statistic
 		UpdatePlayerStatisticsRequest request1 = new UpdatePlayerStatisticsRequest()
 		{
 			Statistics = new List<StatisticUpdate>
@@ -55,6 +61,7 @@ public class GlobalLeaderboard : MonoBehaviour
 			(result) => { Debug.Log("PlayFab - Score Submitted"); },
 			(error) => { Debug.Log("PlayFab Error: " + error); });
 
+		// Update the score statistic
 		UpdatePlayerStatisticsRequest request2 = new UpdatePlayerStatisticsRequest()
 		{
 			Statistics = new List<StatisticUpdate>
@@ -102,6 +109,7 @@ public class GlobalLeaderboard : MonoBehaviour
 			return;
 		}
 
+		int ranking = 1;
 		for(int i = 0; i < entries.Count; )
 		{
 			int score = entries[i].StatValue;
@@ -124,7 +132,7 @@ public class GlobalLeaderboard : MonoBehaviour
 			{
 				string playerId = entry.PlayFabId;
 
-				NetworkManager.Instance.Leaderboard.AddLeaderboardScore(entry.Position + 1,
+				NetworkManager.Instance.Leaderboard.AddLeaderboardScore(ranking++,
 					entry.DisplayName,
 					dict[entry],
 					entry.StatValue, playerId == GameManager.Instance.PlayFabPlayerID);
