@@ -113,7 +113,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		{
 			MenuNavigationManager.Instance.ShowMenu("Login");
 		}
-
+		playerId = "";
+		usernameField.text = playerId;
 		PlayFabClientAPI.ForgetAllCredentials();
 	}
 

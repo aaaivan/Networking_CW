@@ -35,7 +35,12 @@ public class LeaderboardUI : MonoBehaviour
 
 	private void OnDisable()
 	{
-		foreach(Transform t in leaderboardContent)
+		ClearLeaderboard();
+	}
+
+	public void ClearLeaderboard()
+	{
+		foreach (Transform t in leaderboardContent)
 		{
 			Destroy(t.gameObject);
 		}

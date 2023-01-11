@@ -109,6 +109,8 @@ public class GlobalLeaderboard : MonoBehaviour
 			return;
 		}
 
+		NetworkManager.Instance.Leaderboard.ClearLeaderboard();
+
 		int ranking = 1;
 		for(int i = 0; i < entries.Count; )
 		{
@@ -135,7 +137,8 @@ public class GlobalLeaderboard : MonoBehaviour
 				NetworkManager.Instance.Leaderboard.AddLeaderboardScore(ranking++,
 					entry.DisplayName,
 					dict[entry],
-					entry.StatValue, playerId == GameManager.Instance.PlayFabPlayerID);
+					entry.StatValue,
+					playerId == GameManager.Instance.PlayFabPlayerID);
 			}
 		}
 	}
