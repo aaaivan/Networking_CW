@@ -4,12 +4,13 @@ using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 using System;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class GlobalLeaderboard : MonoBehaviour
 {
 	int maxEntries = 10;
-	public readonly string mostKillsName = "Most Kills";
-	public readonly string totalGamesName = "Total Games";
+	public readonly string totalKillsName = "TotalKills";
+	public readonly string scoreName = "Score";
 
 	static GlobalLeaderboard instance;
 	public static GlobalLeaderboard Instance
@@ -37,18 +38,16 @@ public class GlobalLeaderboard : MonoBehaviour
 		}
 	}
 
-	public void UpdateLeaderboard()
+	public void UpdateLeaderboard(int totalKills, int score)
 	{
-		PlayerData playerData = GameManager.Instance.PlayerData;
-
 		UpdatePlayerStatisticsRequest request1 = new UpdatePlayerStatisticsRequest()
 		{
 			Statistics = new List<StatisticUpdate>
 			{
 				new StatisticUpdate()
 				{
-					StatisticName = mostKillsName,
-					Value = playerData.totalKills,
+					StatisticName = totalKillsName,
+					Value = totalKills,
 				}
 			}
 		};
@@ -62,8 +61,8 @@ public class GlobalLeaderboard : MonoBehaviour
 			{
 				new StatisticUpdate()
 				{
-					StatisticName = totalGamesName,
-					Value = playerData.totalGames,
+					StatisticName = scoreName,
+					Value = score,
 				}
 			}
 		};
@@ -82,7 +81,7 @@ public class GlobalLeaderboard : MonoBehaviour
 		GetLeaderboardRequest request = new GetLeaderboardRequest()
 		{
 			MaxResultsCount = maxEntries,
-			StatisticName = mostKillsName,
+			StatisticName = scoreName,
 			ProfileConstraints = new PlayerProfileViewConstraints()
 			{
 				ShowStatistics = true,
@@ -103,14 +102,33 @@ public class GlobalLeaderboard : MonoBehaviour
 			return;
 		}
 
-		for(int i = 0; i < entries.Count; ++i)
+		for(int i = 0; i < entries.Count; )
 		{
-			PlayerLeaderboardEntry entry = entries[i];
-			string playerId = entry.PlayFabId;
-			List<StatisticModel> stats = entry.Profile.Statistics;
-			int totalGamesIndex = stats.FindIndex((x) => x.Name == totalGamesName);
+			int score = entries[i].StatValue;
+			List<PlayerLeaderboardEntry> tier = new List<PlayerLeaderboardEntry>();
+			Dictionary<PlayerLeaderboardEntry, int> dict = new Dictionary<PlayerLeaderboardEntry, int>();
+			while (i < entries.Count && entries[i].StatValue == score)
+			{
+				List<StatisticModel> stats = entries[i].Profile.Statistics;
+				int totalKillsIndex = stats.FindIndex((x) => x.Name == totalKillsName);
 
-			NetworkManager.Instance.Leaderboard.AddLeaderboardScore(entry.Position + 1, entry.DisplayName, stats[totalGamesIndex].Value, entry.StatValue, playerId == GameManager.Instance.PlayFabPlayerID);
+				tier.Add(entries[i]);
+				dict.Add(entries[i], totalKillsIndex >= 0 ? entries[i].Profile.Statistics[totalKillsIndex].Value : 0);
+				++i;
+			}
+
+			// sort the players with the same best score based on number of deaths
+			tier.Sort((a, b) => dict[b].CompareTo(dict[a]));
+
+			foreach(var entry in tier)
+			{
+				string playerId = entry.PlayFabId;
+
+				NetworkManager.Instance.Leaderboard.AddLeaderboardScore(entry.Position + 1,
+					entry.DisplayName,
+					dict[entry],
+					entry.StatValue, playerId == GameManager.Instance.PlayFabPlayerID);
+			}
 		}
 	}
 

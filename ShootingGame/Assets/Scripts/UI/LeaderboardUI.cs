@@ -41,7 +41,7 @@ public class LeaderboardUI : MonoBehaviour
 		}
 	}
 
-	public void AddLeaderboardScore(int ranking, string player, int numGames, int score, bool localPlayer)
+	public void AddLeaderboardScore(int ranking, string player, int totKills, int score, bool localPlayer)
 	{
 		noScoreText.gameObject.SetActive(false);
 		leaderboardScrollView.gameObject.SetActive(true);
@@ -49,7 +49,7 @@ public class LeaderboardUI : MonoBehaviour
 
 		GameObject go = Instantiate(leaderboardEntryPrefab, leaderboardContent);
 		go.transform.Find("Player").GetComponent<TMP_Text>().text = string.Format(entryText, ranking, localPlayer ? "YOU" : player);
-		go.transform.Find("Games").GetComponent<TMP_Text>().text = numGames.ToString();
+		go.transform.Find("Kills").GetComponent<TMP_Text>().text = totKills.ToString();
 		go.transform.Find("Score").GetComponent<TMP_Text>().text = score.ToString();
 
 		if(localPlayer)

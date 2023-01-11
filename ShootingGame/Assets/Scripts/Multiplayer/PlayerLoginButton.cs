@@ -70,6 +70,7 @@ public class PlayerLoginButton : MonoBehaviour
 				ProfileConstraints = new PlayerProfileViewConstraints()
 				{
 					ShowDisplayName = true,
+					ShowStatistics = true,
 				}
 			}
 		};
@@ -79,7 +80,18 @@ public class PlayerLoginButton : MonoBehaviour
 	void LoginSuccessCallback(LoginResult result)
 	{
 		Debug.Log("PlayFab - Login success for user: " + result.PlayFabId);
-		GameManager.Instance.SetPlayFabID(result.PlayFabId);
+		List<StatisticModel> stats = result.InfoResultPayload.PlayerProfile.Statistics;
+		int kills = 0;
+		int score = 0;
+		if(stats != null)
+		{
+			int totalKillsIndex = stats.FindIndex((x) => x.Name == GlobalLeaderboard.Instance.totalKillsName);
+			int scoreIndex = stats.FindIndex((x) => x.Name == GlobalLeaderboard.Instance.scoreName);
+			kills = totalKillsIndex >= 0 ? stats[totalKillsIndex].Value : 0;
+			score = scoreIndex >= 0 ? stats[scoreIndex].Value : 0;
+		}
+
+		GameManager.Instance.SetPlayFabID(result.PlayFabId, kills, score);
 		NetworkManager.Instance.ConnectToMaster(result.InfoResultPayload.PlayerProfile.DisplayName);
 	}
 

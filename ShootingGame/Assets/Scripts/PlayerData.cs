@@ -11,12 +11,10 @@ public class PlayerData
 	public string bestScoreDate;
 	public int playersInGame;
 	public string roomName;
-	public int totalKills;
-	public int totalGames;
 
 	public int GetEntries()
 	{
-		return 8;
+		return 6;
 	}
 
 	public string GetKey(int index)
@@ -35,10 +33,6 @@ public class PlayerData
 				return "Best Game Total Players";
 			case 5:
 				return "Best Game Room Name";
-			case 6:
-				return "Total Number of Kills";
-			case 7:
-				return "Total Number of Games";
 			default:
 				return string.Empty;
 		}
@@ -60,10 +54,6 @@ public class PlayerData
 				return playersInGame.ToString();
 			case 5:
 				return roomName;
-			case 6:
-				return totalKills.ToString();
-			case 7:
-				return totalGames.ToString();
 			default:
 				return string.Empty;
 		}
